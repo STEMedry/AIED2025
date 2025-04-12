@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Simulations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+	    margin: 10px 40px 40px 40px;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .header h1, .header h3 {
+            margin: 1px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .app {
+            display: none;
+            flex: 1;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .app iframe {
+            width: 100%;
+            height: 96%;
+            border: none;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 5px;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        button {
+            padding: 5px 15px;
+            font-size: 16px;
+            margin: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .selected-button {
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7),
+                        0 0 50px rgba(255, 255, 255, 0.5);
+            outline: none;
+            transform: scale(1.15);
+        }
+
+        .button-gray { background-color: gray; color: white; }
+        .button-red { background-color: red; color: white; }
+        .button-green { background-color: green; color: white; }
+        .button-brown { background-color: brown; color: white; }
+        .button-slateblue { background-color: slateblue; color: white; }
+        .button-tomato { background-color: tomato; color: white; }
+        .button-language { background-color: black; color: white; }
+
+        .language-toggle {
+            position: absolute;
+            background-color: #4CAF50;
+            top: -60px;
+            right: 0;
+            margin: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1 id="main-title">Empowering STEM Education with AI-Generated Drone Simulations</h1>
+            <h3 id="author-name">Richard C Y YEUNG, The Education University of Hong Kong</h3>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="button-language language-toggle" onclick="toggleLanguage()" id="lang-toggle">繁體中文</button>
+        <button class="button-gray" onclick="showApp('app0')" id="btn-Home">Home</button>
+        <button class="button-red" onclick="showApp('app1')" id="btn-GNSS">Satellite Positioning</button>
+        <button class="button-green" onclick="showApp('app2')" id="btn-Flight">Virtual Flight</button>
+        <button class="button-brown" onclick="showApp('app3')" id="btn-Physics">QuadPhysics</button>
+        <button class="button-slateblue" onclick="showApp('app4')" id="btn-AOV">Dronography AOV</button>
+        <button class="button-tomato" onclick="showApp('app5')" id="btn-Code">Code Simulation</button>
+    </div>
+
+    <div id="app0" class="app">
+        <iframe src="00_Home.html"></iframe>
+    </div>
+
+    <div id="app1" class="app">
+        <iframe src="01_GNSS.html"></iframe>
+    </div>
+
+    <div id="app2" class="app">
+        <iframe src="02_Flight.html"></iframe>
+    </div>
+
+    <div id="app3" class="app">
+        <iframe src="03_Force.html"></iframe>
+    </div>
+
+    <div id="app4" class="app">
+        <iframe src="04_AOV.html"></iframe>
+    </div>
+
+    <div id="app5" class="app">
+        <iframe src="05_Code.html"></iframe>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                mainTitle: 'Empowering STEM Education with AI-Generated Drone Simulations',
+                authorName: 'Richard C Y YEUNG, The Education University of Hong Kong',
+                languageButton: '繁體中文',
+                buttons: {
+                    Home: 'Home',
+                    GNSS: 'Satellite Positioning',
+                    Flight: 'Virtual Flight',
+                    Physics: 'QuadPhysics',
+                    AOV: 'Dronography AOV',
+                    Code: 'Code Simulation',
+                }
+            },
+            zh: {
+                mainTitle: '利用AI生成無人機模擬程式促進STEM教育',
+                authorName: '楊 仲 堯，香 港 教 育 大 學 (EdUHK)',
+                languageButton: 'English',
+                buttons: {
+                    Home: '主頁',
+                    GNSS: '衛星導航系統',
+                    Flight: '模擬飛行器',
+                    Physics: '四軸機物理',
+                    AOV: '航拍視角',
+                    Code: '編程模擬',
+                }
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            const lang = translations[currentLanguage];
+            document.getElementById('main-title').textContent = lang.mainTitle;
+            document.getElementById('author-name').textContent = lang.authorName;
+            document.getElementById('lang-toggle').textContent = lang.languageButton;
+            document.getElementById('btn-Home').textContent = lang.buttons.Home;
+            document.getElementById('btn-GNSS').textContent = lang.buttons.GNSS;
+            document.getElementById('btn-Flight').textContent = lang.buttons.Flight;
+            document.getElementById('btn-Physics').textContent = lang.buttons.Physics;
+            document.getElementById('btn-AOV').textContent = lang.buttons.AOV;
+            document.getElementById('btn-Code').textContent = lang.buttons.Code;
+        }
+
+        function showApp(appId) {
+            document.querySelectorAll('button:not(.language-toggle)').forEach(btn => {
+                btn.classList.remove('selected-button');
+            });
+            document.querySelectorAll('.app').forEach(app => app.classList.remove('active'));
+            document.getElementById(appId).classList.add('active');
+            const selectedButton = document.querySelector(`[onclick="showApp('${appId}')"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('selected-button');
+            }
+        }
+
+        showApp('app0');
+    </script>
+</body>
+</html>
