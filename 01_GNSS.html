@@ -22,9 +22,6 @@
             min-height: 100vh;    /* Full viewport height */
             padding: 10px;
             box-sizing: border-box;
-	    zoom: 80%; /* Scale down to 80% */
-	    width: calc(100vw / 0.8);
-	    height: calc(100vh / 0.8);
         }
 
         h1 {
@@ -432,6 +429,8 @@
 <div class="header-container">
     <h1 id="mainTitle">GNSS Satellite Positioning of Drone <span style="font-size: 16px; font-weight: normal;">(simplified 2D simulation)</span></h1>
     <div class="header-buttons">
+        <!-- Added Back Button -->
+        <a href="001_gallery.html" id="backButton" class="back-button">Back</a>
         <button id="langButton" class="langButton">繁體中文</button>
     </div>
 </div>
@@ -1063,7 +1062,7 @@
                     }
                 },
                 pageTitle: {
-                    en: 'GPS Satellite Positioning of Drone',
+                    en: 'GNSS Satellite Positioning of Drone',
                     zh: '無人機 GNSS 衛星定位'
                 },
                 subtitle: {
