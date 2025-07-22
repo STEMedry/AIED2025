@@ -97,7 +97,7 @@
             <th>Distance</th>
             <th>Triangle</th>
           </tr>
-          <!-- rows 1–22 -->
+          <!-- rows 1--22 -->
           <tr><td>1 (Red)</td>  <td><span id="sat1r"  class="distance-display">30.00</span></td> <td><button class="triangleButton" data-sat="1">Triangle 1</button></td></tr>
           <tr><td>2 (Green)</td><td><span id="sat2r"  class="distance-display">30.00</span></td> <td><button class="triangleButton" data-sat="2">Triangle 2</button></td></tr>
           <tr><td>3 (Blue)</td> <td><span id="sat3r"  class="distance-display">30.00</span></td> <td><button class="triangleButton" data-sat="3">Triangle 3</button></td></tr>
@@ -179,7 +179,8 @@
     let showTriangles=new Array(22).fill(false),
         showAllSatellites=false,
         showEffectiveSatellites=false,
-        satellitesPaused=false;
+        satellitesPaused=false,
+        showSatCoverage=new Array(22).fill(false);
 
     const droneImage=new Image(), satelliteImage=new Image();
     droneImage.src='drone.png'; satelliteImage.src='satellite.png';
@@ -223,107 +224,166 @@
     let blinkState=true;
     setInterval(()=>{ blinkState=!blinkState; updateVisualization(); },500);
 
-    // *** MODIFIED: drawCoverageCircles uses s.actualDistance when in range ***
+    // Draw coverage circles only when in range (≤30) or when showing all
     function drawCoverageCircles(){
-      satellites.forEach(s=>{
-        if(showAllSatellites||(showEffectiveSatellites&&s.inRange)){
-          const displayedRadius = (s.inRange ? s.actualDistance : s.r) * scale;
-          ctx.beginPath();
-          ctx.strokeStyle=s.color; ctx.lineWidth=1;
-          ctx.arc(s.x*scale+offsetX, offsetY-s.y*scale, displayedRadius, 0, 2*Math.PI);
-          ctx.stroke();
+      satellites.forEach((s,i)=>{
+        let radiusUnits;
+        if(showAllSatellites){
+          radiusUnits = s.r;
+        } else if(showEffectiveSatellites && s.inRange){
+          radiusUnits = s.actualDistance;
+        } else if(showSatCoverage[i] && s.inRange){
+          radiusUnits = s.actualDistance;
+        } else {
+          return;
         }
+        const displayedRadius = radiusUnits * scale;
+        ctx.beginPath();
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth = 1;
+        ctx.arc(
+          s.x * scale + offsetX,
+          offsetY - s.y * scale,
+          displayedRadius,
+          0, 2 * Math.PI
+        );
+        ctx.stroke();
       });
     }
 
     function drawSatellites(){
       satellites.forEach(s=>{
         if(satelliteImageLoaded){
-          ctx.globalAlpha=(showEffectiveSatellites&&s.inRange)?(blinkState?1:0.3):1;
-          ctx.drawImage(satelliteImage, s.x*scale+offsetX-15, offsetY-s.y*scale-15, 30,30);
-          ctx.globalAlpha=1;
+          ctx.globalAlpha = (showEffectiveSatellites && s.inRange)
+            ? (blinkState ? 1 : 0.3)
+            : 1;
+          ctx.drawImage(
+            satelliteImage,
+            s.x * scale + offsetX - 15,
+            offsetY - s.y * scale - 15,
+            30, 30
+          );
+          ctx.globalAlpha = 1;
         } else {
           ctx.beginPath();
-          ctx.arc(s.x*scale+offsetX, offsetY-s.y*scale, 5,0,2*Math.PI);
-          ctx.fillStyle=s.color; ctx.fill();
+          ctx.arc(
+            s.x * scale + offsetX,
+            offsetY - s.y * scale,
+            5, 0, 2 * Math.PI
+          );
+          ctx.fillStyle = s.color;
+          ctx.fill();
         }
         if(s.inRange){
-          ctx.fillStyle=s.color;ctx.font='12px Arial';
-          ctx.fillText(`Sat ${s.id} (${s.x.toFixed(1)},${s.y.toFixed(1)})`, s.x*scale+offsetX+10, offsetY-s.y*scale-10);
-          ctx.fillText(`d=${s.actualDistance.toFixed(2)}`, s.x*scale+offsetX+10, offsetY-s.y*scale+5);
+          ctx.fillStyle = s.color;
+          ctx.font = '12px Arial';
+          ctx.fillText(
+            `Sat ${s.id} (${s.x.toFixed(1)},${s.y.toFixed(1)})`,
+            s.x * scale + offsetX + 10,
+            offsetY - s.y * scale - 10
+          );
+          ctx.fillText(
+            `d=${s.actualDistance.toFixed(2)}`,
+            s.x * scale + offsetX + 10,
+            offsetY - s.y * scale + 5
+          );
         }
       });
+      // Draw drone
       if(droneImageLoaded){
-        ctx.drawImage(droneImage, droneX*scale+offsetX-25, offsetY-droneY*scale-25, 50,50);
+        ctx.drawImage(
+          droneImage,
+          droneX * scale + offsetX - 25,
+          offsetY - droneY * scale - 25,
+          50, 50
+        );
       } else {
         ctx.beginPath();
-        ctx.arc(droneX*scale+offsetX, offsetY-droneY*scale,7,0,2*Math.PI);
-        ctx.fillStyle='black'; ctx.fill();
+        ctx.arc(
+          droneX * scale + offsetX,
+          offsetY - droneY * scale,
+          7, 0, 2 * Math.PI
+        );
+        ctx.fillStyle = 'black';
+        ctx.fill();
       }
-      const lab=`D (${droneX.toFixed(2)},${droneY.toFixed(2)})`;
-      ctx.font='bold 14px Arial';
-      const tw=ctx.measureText(lab).width, pd=4;
-      ctx.fillStyle='rgba(255,255,255,0.8)';
-      ctx.fillRect(droneX*scale+offsetX+10-pd, offsetY-droneY*scale-25-pd, tw+pd*2, 20+pd*2);
-      ctx.fillStyle='black';
-      ctx.fillText(lab, droneX*scale+offsetX+10, offsetY-droneY*scale-10);
+      // Drone label
+      const lab = `D (${droneX.toFixed(2)},${droneY.toFixed(2)})`;
+      ctx.font = 'bold 14px Arial';
+      const tw = ctx.measureText(lab).width, pd = 4;
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.fillRect(
+        droneX * scale + offsetX + 10 - pd,
+        offsetY - droneY * scale - 25 - pd,
+        tw + pd * 2,
+        20 + pd * 2
+      );
+      ctx.fillStyle = 'black';
+      ctx.fillText(
+        lab,
+        droneX * scale + offsetX + 10,
+        offsetY - droneY * scale - 10
+      );
     }
 
     function updateSatelliteRadii(){
-      let cnt=0;
+      let cnt = 0;
       satellites.forEach(s=>{
-        const dx=s.x-droneX, dy=s.y-droneY, d=Math.hypot(dx,dy);
-        s.actualDistance=d; s.inRange=d<=s.r;
-        const row=document.querySelector(`tr:nth-child(${s.id+1})`);
-        const cell=row.querySelector('td:first-child');
-        const btn=row.querySelector('.triangleButton');
+        const dx = s.x - droneX,
+              dy = s.y - droneY,
+              d = Math.hypot(dx, dy);
+        s.actualDistance = d;
+        s.inRange = d <= s.r;
+        const row = document.querySelector(`tr:nth-child(${s.id+1})`);
+        const cell = row.querySelector('td:first-child');
+        const btn = row.querySelector('.triangleButton');
         if(s.inRange){
-          cnt++; cell.classList.add('satellite-detected'); btn.classList.add('triangle-detected');
+          cnt++;
+          cell.classList.add('satellite-detected');
+          btn.classList.add('triangle-detected');
         } else {
-          cell.classList.remove('satellite-detected'); btn.classList.remove('triangle-detected');
+          cell.classList.remove('satellite-detected');
+          btn.classList.remove('triangle-detected');
         }
-        const span=document.getElementById(`sat${s.id}r`);
-        span.textContent=d.toFixed(2);
-        if(d<=s.r){
-          span.style.color='red'; span.style.fontWeight='bold';
+        const span = document.getElementById(`sat${s.id}r`);
+        span.textContent = d.toFixed(2);
+        if(d <= s.r){
+          span.style.color = 'red';
+          span.style.fontWeight = 'bold';
         } else {
-          span.style.color='black'; span.style.fontWeight='normal';
+          span.style.color = 'black';
+          span.style.fontWeight = 'normal';
         }
       });
       return cnt;
     }
 
-    // *** MODIFIED: drawTrianglesOnCanvas uses dynamic radius too ***
     function drawTrianglesOnCanvas(){
       satellites.forEach((s,i)=>{
-        if(showTriangles[i]&&s.inRange){
+        if(showTriangles[i] && s.inRange){
           ctx.beginPath();
-          ctx.strokeStyle=s.color;
-          ctx.fillStyle=toRGBA(s.color,0.2);
-          ctx.lineWidth=2;
+          ctx.strokeStyle = s.color;
+          ctx.fillStyle = toRGBA(s.color,0.2);
+          ctx.lineWidth = 2;
           ctx.moveTo(s.x*scale+offsetX, offsetY-s.y*scale);
           ctx.lineTo(droneX*scale+offsetX, offsetY-s.y*scale);
           ctx.lineTo(droneX*scale+offsetX, offsetY-droneY*scale);
           ctx.closePath(); ctx.fill(); ctx.stroke();
-
-          const displayedRadius = (s.inRange ? s.actualDistance : s.r) * scale;
-          ctx.beginPath();
-          ctx.strokeStyle=s.color; ctx.lineWidth=1;
-          ctx.arc(s.x*scale+offsetX, offsetY-s.y*scale, displayedRadius, 0, 2*Math.PI);
-          ctx.stroke();
         }
       });
     }
 
     function drawSignalCounter(n){
-      const sc=document.getElementById('signalCounter');
-      sc.textContent=`${translations.satellitesInRange[isEnglish?'en':'zh']}${n}\n${translations.effectiveRadiusAll[isEnglish?'en':'zh']}30`;
-      sc.style.color=n>=3?'#006400':'#8B0000';
+      const sc = document.getElementById('signalCounter');
+      sc.textContent =
+        `${translations.satellitesInRange[isEnglish?'en':'zh']}${n}\n`+
+        `${translations.effectiveRadiusAll[isEnglish?'en':'zh']}30`;
+      sc.style.color = n >= 3 ? '#006400' : '#8B0000';
     }
 
     function updateVisualization(){
       drawGridAndAxes();
-      const cnt=updateSatelliteRadii();
+      const cnt = updateSatelliteRadii();
       drawCoverageCircles();
       drawTrianglesOnCanvas();
       drawSatellites();
@@ -331,35 +391,57 @@
     }
 
     function getEventPosition(e){
-      const r=canvas.getBoundingClientRect();
+      const r = canvas.getBoundingClientRect();
       if(e.touches) return {x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
       return {x:e.clientX-r.left,y:e.clientY-r.top};
     }
     function isDroneClicked(x,y){
-      return Math.hypot(x-(droneX*scale+offsetX), y-(offsetY-droneY*scale))<=15;
+      return Math.hypot(
+        x - (droneX*scale+offsetX),
+        y - (offsetY-droneY*scale)
+      ) <= 15;
     }
 
     canvas.addEventListener('mousedown',e=>{
-      const p=getEventPosition(e);
-      if(isDroneClicked(p.x,p.y)){isDragging=true;canvas.style.cursor='grabbing';}
+      const p = getEventPosition(e);
+      if(isDroneClicked(p.x,p.y)){ isDragging=true; canvas.style.cursor='grabbing'; }
     });
     canvas.addEventListener('touchstart',e=>{
-      const p=getEventPosition(e);
-      if(isDroneClicked(p.x,p.y)){isDragging=true;canvas.style.cursor='grabbing';}
+      const p = getEventPosition(e);
+      if(isDroneClicked(p.x,p.y)){ isDragging=true; canvas.style.cursor='grabbing'; }
     });
     function handleMove(e){
       if(!isDragging) return;
-      const p=getEventPosition(e);
-      droneX=Math.max(-50,Math.min(50,(p.x-offsetX)/scale));
-      droneY=Math.max(-50,Math.min(50,(offsetY-p.y)/scale));
+      const p = getEventPosition(e);
+      droneX = Math.max(-50, Math.min(50, (p.x-offsetX)/scale));
+      droneY = Math.max(-50, Math.min(50, (offsetY-p.y)/scale));
       updateVisualization();
     }
     canvas.addEventListener('mousemove',handleMove);
     canvas.addEventListener('touchmove',e=>{e.preventDefault();handleMove(e);},{passive:false});
-    function endDrag(){ if(isDragging){ isDragging=false; canvas.style.cursor='grab'; } }
+    function endDrag(){
+      if(isDragging){
+        isDragging=false;
+        canvas.style.cursor='grab';
+      }
+    }
     canvas.addEventListener('mouseup',endDrag);
     canvas.addEventListener('mouseleave',endDrag);
     canvas.addEventListener('touchend',endDrag);
+
+    // Toggle coverage circle per-satellite
+    canvas.addEventListener('click', e => {
+      if(isDragging) return;
+      const p = getEventPosition(e);
+      satellites.forEach((s,i)=>{
+        const sx = s.x*scale + offsetX,
+              sy = offsetY - s.y*scale;
+        if(Math.hypot(p.x - sx, p.y - sy) <= 15){
+          showSatCoverage[i] = !showSatCoverage[i];
+          updateVisualization();
+        }
+      });
+    });
 
     function toRGBA(color,alpha){
       const d=document.createElement('div');
@@ -373,46 +455,50 @@
     function animateSatellites(){
       if(!satellitesPaused){
         satellites.forEach(s=>{
-          s.angle=(s.angle+s.direction*s.angularSpeed)%(2*Math.PI);
-          s.x=s.orbitRadius*Math.cos(s.angle);
-          s.y=s.orbitRadius*Math.sin(s.angle);
+          s.angle = (s.angle + s.direction*s.angularSpeed) % (2*Math.PI);
+          s.x = s.orbitRadius * Math.cos(s.angle);
+          s.y = s.orbitRadius * Math.sin(s.angle);
         });
         updateVisualization();
       }
-      satFrame=requestAnimationFrame(animateSatellites);
+      satFrame = requestAnimationFrame(animateSatellites);
     }
 
     let simFrame,simulationActive=false,simulationPaused=false,simulationTime=0;
     const SIMULATION_DURATION=20000;
     function runSimulation(){
       if(!simulationActive){
-        simulationActive=true;simulationPaused=false;
-        document.getElementById('simulationButton').textContent=translations.pauseDroneMove[isEnglish?'en':'zh'];
-        simulationTime=0;animateSimulation();
+        simulationActive=true; simulationPaused=false;
+        document.getElementById('simulationButton').textContent=
+          translations.pauseDroneMove[isEnglish?'en':'zh'];
+        simulationTime=0; animateSimulation();
       } else if(!simulationPaused){
         simulationPaused=true;
-        document.getElementById('simulationButton').textContent=translations.resumeDroneMove[isEnglish?'en':'zh'];
+        document.getElementById('simulationButton').textContent=
+          translations.resumeDroneMove[isEnglish?'en':'zh'];
       } else {
         simulationPaused=false;
-        document.getElementById('simulationButton').textContent=translations.pauseDroneMove[isEnglish?'en':'zh'];
+        document.getElementById('simulationButton').textContent=
+          translations.pauseDroneMove[isEnglish?'en':'zh'];
         animateSimulation();
       }
     }
     function animateSimulation(){
       if(!simulationActive||simulationPaused) return;
-      simulationTime+=16.7;
-      if(simulationTime>=SIMULATION_DURATION){
+      simulationTime += 16.7;
+      if(simulationTime >= SIMULATION_DURATION){
         simulationActive=simulationPaused=false;
         droneX=droneY=0;
-        document.getElementById('simulationButton').textContent=translations.simulation[isEnglish?'en':'zh'];
+        document.getElementById('simulationButton').textContent=
+          translations.simulation[isEnglish?'en':'zh'];
         updateVisualization();
         return;
       }
-      const p=(simulationTime/SIMULATION_DURATION)*Math.PI*2;
-      droneX=30*Math.sin(p);
-      droneY=20*Math.sin(p*2);
+      const p = (simulationTime/SIMULATION_DURATION)*Math.PI*2;
+      droneX = 30*Math.sin(p);
+      droneY = 20*Math.sin(p*2);
       updateVisualization();
-      simFrame=requestAnimationFrame(animateSimulation);
+      simFrame = requestAnimationFrame(animateSimulation);
     }
 
     let isEnglish=true;
@@ -456,7 +542,7 @@
           {title:'歡迎使用 GNSS 三邊測量教學',content:`本教學說明如何透過多顆衛星與其測距，判定無人機的位置。`},
           {title:'測距圓示意',content:`每顆衛星會告訴你它的位置。<br>以該衛星為圓心、測得距離為半徑畫圓。<br>無人機的位置一定落在此圓上。`},
           {title:'兩圓交點',content:`兩顆衛星的圓可能交於兩點。<br>點擊兩顆衛星的「三角形」按鈕，畫出對應線段，觀察交點位置。`},
-          {title:'第三圓排除歧義',content:`第三顆衛星的圓只會與前兩點其中一點相交。<br>選取第三顆衛星，交點即為無人機的真實位置。`},
+          {title:'第三圓排除歧義',content:`第三顆衛星的圓只會與前兩點其中一點交。<br>選取第三顆衛星，交點即為無人機的真實位置。`},
           {title:'模擬器操作',content:`• 「顯示所有衛星」：切換所有圓。<br>• 「顯示有效衛星」：閃爍範圍內衛星。<br>• 拖曳無人機，實時更新距離與圓圈。`},
           {title:'三邊測量可視化',content:`1. 選取三顆範圍內衛星的三角形。<br>2. 觀察色彩三角形如何定位無人機。`},
           {title:'最大化衛星數',content:`將無人機放在最多衛星可測距的位置。<br>衛星越多，定位越精確。`},
@@ -518,8 +604,7 @@
     }
 
     document.getElementById('langButton').addEventListener('click',()=>{
-      isEnglish=!isEnglish;
-      updateLanguage();
+      isEnglish=!isEnglish; updateLanguage();
     });
 
     document.getElementById('pauseSatellitesButton').addEventListener('click',()=>{
@@ -554,6 +639,7 @@
       showTriangles=[...DEFAULT_STATES.triangles];
       showAllSatellites=false;
       showEffectiveSatellites=false;
+      showSatCoverage=new Array(22).fill(false);
       document.querySelectorAll('.triangleButton').forEach(btn=>{
         btn.style.backgroundColor=''; btn.classList.remove('clicked');
       });
