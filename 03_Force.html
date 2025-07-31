@@ -464,8 +464,8 @@
 
       // --- Takeoff Logic ---
       if (!hasTakenOff) {
-        // Stay on ground until rotorSpeed >= hoverRotorSpeed + 0.1
-        if (guiControls.rotorSpeed >= hoverRotorSpeed + 0.1) {
+        // Stay on ground until rotorSpeed >= hoverRotorSpeed + 0.01
+        if (guiControls.rotorSpeed >= hoverRotorSpeed + 0.01) {
           hasTakenOff = true;
           takeoffAudio.play().catch(()=>{});
         } else {
