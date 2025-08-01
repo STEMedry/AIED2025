@@ -2090,19 +2090,83 @@ document.getElementById('showFOVHeightBtn').addEventListener('click', function()
       };
     }
     
-    renderer.domElement.addEventListener('touchstart', function(event) {
+
+// --- Touch & Pinch gesture support: iPad/Tablet/Mobile --- //
+let touchMode = null; // "altitude", "building", "move", "pinch"
+let touchStartY = 0;
+let touchStartAltitude = 0;
+let pinchStartDist = 0;
+let pinchStartCameraDistance = 0;
+let pinchOngoing = false;
+
+// Helper: distance between two touches
+function getTouchDistance(t1, t2) {
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+// Touch event handlers for the renderer canvas
+renderer.domElement.addEventListener("touchstart", function(event) {
+  if (event.touches.length === 1) {
+    // Single finger: Maybe altitude drag (if touching drone)
+    const touch = event.touches[0];
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const droneHit = raycaster.intersectObject(drone, true);
+    if (droneHit.length > 0) {
+      touchMode = "altitude";
+      touchStartY = touch.clientY;
+      touchStartAltitude = drone.position.y;
       event.preventDefault();
-      if (event.touches.length === 1) {
-        onMouseDown({ clientX: event.touches[0].clientX, clientY: event.touches[0].clientY, button: 0 });
-      }
-    }, { passive: false });
-    
-    renderer.domElement.addEventListener('touchmove', function(event) {
-      event.preventDefault();
-      if (event.touches.length === 1) {
-        onMouseMove({ clientX: event.touches[0].clientX, clientY: event.touches[0].clientY, buttons: 2 });
-      }
-    }, { passive: false });
+    } else {
+      touchMode = null;
+    }
+  } else if (event.touches.length === 2) {
+    // Pinch: zoom
+    pinchOngoing = true;
+    pinchStartDist = getTouchDistance(event.touches[0], event.touches[1]);
+    pinchStartCameraDistance = cameraDistance;
+    touchMode = "pinch";
+    event.preventDefault();
+  }
+}, {passive: false});
+
+renderer.domElement.addEventListener("touchmove", function(event) {
+  if (touchMode === "altitude" && event.touches.length === 1) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const dy = touchStartY - touch.clientY;
+    let newAltitude = touchStartAltitude + dy * 0.5; // same scaling as mouse
+    newAltitude = Math.max(0, Math.min(500, newAltitude));
+    syncAltitude(newAltitude);
+  } else if (touchMode === "pinch" && event.touches.length === 2) {
+    event.preventDefault();
+    const dist = getTouchDistance(event.touches[0], event.touches[1]);
+    const scale = dist / pinchStartDist;
+    let newCamDist = pinchStartCameraDistance / scale;
+    newCamDist = Math.max(10, Math.min(1000, newCamDist));
+    cameraDistance = newCamDist;
+    updateCamera();
+  }
+}, {passive: false});
+
+renderer.domElement.addEventListener("touchend", function(event) {
+  if (pinchOngoing && event.touches.length < 2) {
+    pinchOngoing = false;
+    touchMode = null;
+  }
+  if (event.touches.length === 0) {
+    touchMode = null;
+  }
+}, {passive: false});
+
+
+
+
+
     
     document.querySelectorAll('button').forEach(button => {
       button.addEventListener('touchstart', function(e) {
@@ -2111,13 +2175,7 @@ document.getElementById('showFOVHeightBtn').addEventListener('click', function()
       });
     });
     
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(event) {
-      const now = (new Date()).getTime();
-      if (now - lastTouchEnd <= 300) event.preventDefault();
-      lastTouchEnd = now;
-    }, false);
-    
+   
     // View Control Functions
     function tiltUp() {
       cameraTilt = Math.min(cameraTilt + 0.1, Math.PI / 2 - 0.1);
