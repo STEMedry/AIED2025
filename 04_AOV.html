@@ -752,7 +752,8 @@
     let cornerLabels = [];
     let dimensionLabels = [];
     let centerLabel = null;
-    
+    let fovArea;
+
     let cameraDistance = 100;
     let cameraAngle = Math.PI / 2;
     let cameraTilt = 0.5;
@@ -2091,82 +2092,6 @@ document.getElementById('showFOVHeightBtn').addEventListener('click', function()
     }
     
 
-// --- Touch & Pinch gesture support: iPad/Tablet/Mobile --- //
-let touchMode = null; // "altitude", "building", "move", "pinch"
-let touchStartY = 0;
-let touchStartAltitude = 0;
-let pinchStartDist = 0;
-let pinchStartCameraDistance = 0;
-let pinchOngoing = false;
-
-// Helper: distance between two touches
-function getTouchDistance(t1, t2) {
-  const dx = t1.clientX - t2.clientX;
-  const dy = t1.clientY - t2.clientY;
-  return Math.sqrt(dx*dx + dy*dy);
-}
-
-// Touch event handlers for the renderer canvas
-renderer.domElement.addEventListener("touchstart", function(event) {
-  if (event.touches.length === 1) {
-    // Single finger: Maybe altitude drag (if touching drone)
-    const touch = event.touches[0];
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const droneHit = raycaster.intersectObject(drone, true);
-    if (droneHit.length > 0) {
-      touchMode = "altitude";
-      touchStartY = touch.clientY;
-      touchStartAltitude = drone.position.y;
-      event.preventDefault();
-    } else {
-      touchMode = null;
-    }
-  } else if (event.touches.length === 2) {
-    // Pinch: zoom
-    pinchOngoing = true;
-    pinchStartDist = getTouchDistance(event.touches[0], event.touches[1]);
-    pinchStartCameraDistance = cameraDistance;
-    touchMode = "pinch";
-    event.preventDefault();
-  }
-}, {passive: false});
-
-renderer.domElement.addEventListener("touchmove", function(event) {
-  if (touchMode === "altitude" && event.touches.length === 1) {
-    event.preventDefault();
-    const touch = event.touches[0];
-    const dy = touchStartY - touch.clientY;
-    let newAltitude = touchStartAltitude + dy * 0.5; // same scaling as mouse
-    newAltitude = Math.max(0, Math.min(500, newAltitude));
-    syncAltitude(newAltitude);
-  } else if (touchMode === "pinch" && event.touches.length === 2) {
-    event.preventDefault();
-    const dist = getTouchDistance(event.touches[0], event.touches[1]);
-    const scale = dist / pinchStartDist;
-    let newCamDist = pinchStartCameraDistance / scale;
-    newCamDist = Math.max(10, Math.min(1000, newCamDist));
-    cameraDistance = newCamDist;
-    updateCamera();
-  }
-}, {passive: false});
-
-renderer.domElement.addEventListener("touchend", function(event) {
-  if (pinchOngoing && event.touches.length < 2) {
-    pinchOngoing = false;
-    touchMode = null;
-  }
-  if (event.touches.length === 0) {
-    touchMode = null;
-  }
-}, {passive: false});
-
-
-
-
-
     
     document.querySelectorAll('button').forEach(button => {
       button.addEventListener('touchstart', function(e) {
@@ -2626,6 +2551,149 @@ function setupAltitudeAreaCurveRealtime() {
 }
 setupAltitudeAreaCurveRealtime();
 
+// --- TOUCH MANAGEMENT FOR IPAD/SAFARI/ANDROID --- //
+let touchOp = null; // "drone", "building", "camera", "pinch"
+let touchDragStart = null;
+let dragObj = null;
+let dragObjStart = null;
+let cameraAngleStart = 0, cameraTiltStart = 0;
+let cameraLastTouch = {x:0, y:0};
+let pinchStartDist = 0, pinchStartCameraDistance = 0;
+let lastTouchMovedObj = false;
+
+// Helper for building list
+const buildings = [
+  {name: 'school', mesh: ()=>schoolBuilding},
+  {name: 'bank', mesh: ()=>bankTower},
+  {name: 'trident', mesh: ()=>tridentBlocks},
+];
+
+// Utility: get touch (canvas) coordinates and set raycaster
+function setTouchRay(touch) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+}
+
+renderer.domElement.style.touchAction = "none"; // Prevent all default scrolling
+
+renderer.domElement.addEventListener("touchstart", function(e) {
+  if (e.touches.length==1) {
+    const touch = e.touches[0];
+    setTouchRay(touch);
+
+    // Check if touching a visible building
+    let hitBuilding = null;
+    let hitObj = null;
+
+    for (let b of buildings) {
+      const obj = b.mesh();
+      if (obj.visible) {
+        const hits = raycaster.intersectObject(obj, true);
+        if (hits.length) {
+          hitBuilding = b;
+          hitObj = obj;
+          break;
+        }
+      }
+    }
+
+    // Check if touching drone
+    const droneHit = raycaster.intersectObject(drone, true);
+
+    if (hitBuilding) {
+      touchOp = "building";
+      dragObj = hitObj;
+      dragObjStart = dragObj.position.clone();
+      touchDragStart = {x: touch.clientX, y: touch.clientY};
+      lastTouchMovedObj = false;
+    } else if (droneHit.length) {
+      touchOp = "drone";
+      touchDragStart = {x: touch.clientX, y: touch.clientY, altitude: drone.position.y};
+    } else {
+      touchOp = "camera";
+      cameraLastTouch = {x: touch.clientX, y: touch.clientY};
+      cameraAngleStart = cameraAngle;
+      cameraTiltStart = cameraTilt;
+    }
+    if (e.cancelable) e.preventDefault();
+  } else if (e.touches.length==2) {
+    // Pinch zoom
+    pinchStartDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    pinchStartCameraDistance = cameraDistance;
+    touchOp = "pinch";
+    if (e.cancelable) e.preventDefault();
+  }
+}, {passive:false});
+
+renderer.domElement.addEventListener("touchmove", function(e) {
+  if (touchOp === "building" && e.touches.length==1 && dragObj && dragObjStart) {
+    const touch = e.touches[0];
+    // Raycast to ground plane: find where finger points at y=0
+    setTouchRay(touch);
+    // Plane: y=0
+    const planeY = 0;
+    const planeNormal = new THREE.Vector3(0,1,0);
+    const plane = new THREE.Plane(planeNormal, -planeY);
+    const intersect = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plane, intersect);
+
+    // At touchstart, record offset between building position and intersection
+    if (!lastTouchMovedObj) {
+      dragObj.userData.offset = intersect.clone().sub(dragObj.position);
+      lastTouchMovedObj = true;
+    }
+    if (dragObj.userData.offset && intersect) {
+      const newPos = intersect.clone().sub(dragObj.userData.offset);
+      dragObj.position.x = newPos.x;
+      dragObj.position.z = newPos.z;
+      updateFOV();
+    }
+    if (e.cancelable) e.preventDefault();
+  }
+  else if (touchOp === "drone" && e.touches.length==1 && touchDragStart) {
+    const touch = e.touches[0];
+    let dy = touchDragStart.y - touch.clientY;
+    let newAltitude = touchDragStart.altitude + dy*0.5;
+    newAltitude = Math.max(0, Math.min(500, newAltitude));
+    syncAltitude(newAltitude);
+    if (e.cancelable) e.preventDefault();
+  }
+  else if (touchOp === "camera" && e.touches.length==1) {
+    const touch = e.touches[0];
+    let dx = touch.clientX - cameraLastTouch.x;
+    let dy = touch.clientY - cameraLastTouch.y;
+    cameraAngle = cameraAngleStart - dx*0.012;
+    cameraTilt = Math.max(-Math.PI/2+0.1, Math.min(Math.PI/2-0.1, cameraTiltStart - dy*0.012));
+    updateCamera();
+    if (e.cancelable) e.preventDefault();
+  }
+  else if (touchOp === "pinch" && e.touches.length==2) {
+    let dist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    let scale = dist / pinchStartDist;
+    let newDist = pinchStartCameraDistance / scale;
+    cameraDistance = Math.max(10, Math.min(1000, newDist));
+    updateCamera();
+    if (e.cancelable) e.preventDefault();
+  }
+}, {passive:false});
+
+renderer.domElement.addEventListener("touchend", function(e) {
+  if (e.touches.length===0) {
+    touchOp = null;
+    dragObj = null;
+    dragObjStart = null;
+    lastTouchMovedObj = false;
+  }
+  if (e.cancelable) e.preventDefault();
+}, {passive:false});
 
   </script>
 </body>
