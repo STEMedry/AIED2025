@@ -2144,12 +2144,12 @@ document.getElementById('showFOVHeightBtn').addEventListener('click', function()
     }
     
     function moveUp() {
-      const newAltitude = Math.min(500, drone.position.y + 1);
+      const newAltitude = Math.min(500, drone.position.y + 0.1);
       syncAltitude(newAltitude);
     }
     
     function moveDown() {
-      const newAltitude = Math.max(0, drone.position.y - 1);
+      const newAltitude = Math.max(0, drone.position.y - 0.1);
       syncAltitude(newAltitude);
     }
     
@@ -2650,7 +2650,6 @@ renderer.domElement.addEventListener("touchmove", function(e) {
     if (dragObj.userData.offset && intersect) {
       const newPos = intersect.clone().sub(dragObj.userData.offset);
       dragObj.position.x = newPos.x;
-      dragObj.position.z = newPos.z;
       updateFOV();
     }
     if (e.cancelable) e.preventDefault();
