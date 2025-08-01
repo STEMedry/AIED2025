@@ -507,7 +507,6 @@
   <div id="controls">
 <h2>
   <span class="heading-text" data-i18n="1. Calculate Area" data-i18n-zh="1. 計算面積">1. Calculate Area</span>
-  <span class="hint-icon" data-hint="areaHintModal">💡</span>
 </h2>
     <h3 data-i18n="Aspect Ratio" data-i18n-zh="畫幅比例">Aspect Ratio</h3>
     <div class="aspectRatioButtons">
@@ -540,24 +539,28 @@
         <span id="daovValue">0.0</span> °
       </label>
     </div>
-    <div id="altitudeFOVMeasurements">
-      <label>
-        <span data-i18n="Drone Altitude:" data-i18n-zh="無人機高度:">Drone Altitude:</span>
-        <span id="altitudeValue">0</span> m
-      </label>
-      <label>
-        <span data-i18n="FOV Width:" data-i18n-zh="視野寬度:">FOV Width:</span>
-        <span id="widthValue">0</span> m
-      </label>
-      <label>
-        <span data-i18n="FOV Height:" data-i18n-zh="視野高度:">FOV Height:</span>
-        <span id="heightValue">0</span> m
-      </label>
-      <label>
-        <span data-i18n="Area Captured:" data-i18n-zh="捕捉面積:">Area Captured:</span>
-        <span id="areaValue">0</span> m²
-      </label>
-    </div>
+
+<div id="altitudeFOVMeasurements">
+  <label>
+    <span data-i18n="Drone Altitude:" data-i18n-zh="無人機高度:">Drone Altitude:</span>
+    <span id="altitudeValue">0</span> m
+  </label>
+  <label>
+    <span data-i18n="FOV Width:" data-i18n-zh="視野寬度:">FOV Width:</span>
+    <span id="widthValue">0</span> m
+    <button type="button" id="showFOVWidthBtn" style="display:inline-block;width:auto;padding:2px 10px;font-size:12px;margin-left:6px;">Show</button>
+  </label>
+  <label>
+    <span data-i18n="FOV Height:" data-i18n-zh="視野高度:">FOV Height:</span>
+    <span id="heightValue">0</span> m
+    <button type="button" id="showFOVHeightBtn" style="display:inline-block;width:auto;padding:2px 10px;font-size:12px;margin-left:6px;">Show</button>
+  </label>
+  <label>
+    <span data-i18n="Area Captured:" data-i18n-zh="捕捉面積:">Area Captured:</span>
+    <span id="areaValue">0</span> m²
+  </label>
+</div>
+
     <hr>
     <div>
       <button id="toggleSchoolBuilding" class="toggle-building">
@@ -584,7 +587,6 @@
     </div>
 <h3>
   <span class="heading-text" data-i18n="2. Calculate AOV" data-i18n-zh="2. 計算視角">2. Calculate AOV</span>
-  <span class="hint-icon" data-hint="aovHintModal">💡</span>
 </h3>
     <div class="aspectRatioButtons">
       <button class="aspectRatioBtn" data-ratio="1.5" data-i18n="3:2" data-i18n-zh="3:2">3:2</button>
@@ -731,29 +733,6 @@
   <!-- Highlight Box for Tutorial -->
   <div id="highlightBox"></div>
 
-  <!-- HINT POPUPS (modals, one per hint) -->
-  <!-- Area Calculation Hint Modal -->
-  <div class="hint-modal-overlay" id="areaHintModal" tabindex="-1" aria-modal="true" role="dialog">
-    <div class="hint-modal">
-      <button class="closeHint" aria-label="Close Hint">&times;</button>
-      <h4 data-i18n="Hint" data-i18n-zh="提示">Hint</h4>
-      <p data-i18n="Hint: Adjust the Drone Altitude and Horizontal AOV using the sliders or inputs. The control panel shows the resulting FOV Width and Height. The Area Captured is calculated as FOV Width × FOV Height."
-         data-i18n-zh="提示：請用滑桿或輸入欄調整無人機高度及水平視角。控制面板會顯示對應的視野寬度和高度。捕捉面積會自動計算為視野寬度 × 視野高度。">
-        Hint: Adjust the Drone Altitude and Horizontal AOV using the sliders or inputs. The control panel shows the resulting FOV Width and Height. The Area Captured is calculated as FOV Width × FOV Height.
-      </p>
-    </div>
-  </div>
-  <!-- AOV Calculation Hint Modal -->
-  <div class="hint-modal-overlay" id="aovHintModal" tabindex="-1" aria-modal="true" role="dialog">
-    <div class="hint-modal">
-      <button class="closeHint" aria-label="Close Hint">&times;</button>
-      <h4 data-i18n="Hint" data-i18n-zh="提示">Hint</h4>
-      <p data-i18n="Hint: Set the Altitude and FOV Width. Horizontal AOV is computed automatically, and the Vertical and Diagonal AOVs are derived from the selected aspect ratio."
-         data-i18n-zh="提示：請輸入高度和視野寬度。水平視角會自動計算，垂直及對角視角則根據選定比例推導。">
-        Hint: Set the Altitude and FOV Width. Horizontal AOV is computed automatically, and the Vertical and Diagonal AOVs are derived from the selected aspect ratio.
-      </p>
-    </div>
-  </div>
   
   <!-- Three.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -793,6 +772,8 @@
     let buildingDragStartX = 0;
     let mouseStartX = 0;
     
+    let showFOVWidthLabel = false;
+    let showFOVHeightLabel = false;
 
 
     /*******************************************************
@@ -860,28 +841,53 @@
       return sprite;
     }
     
-    function createDimensionLabel(text, position, scale) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const context = canvas.getContext('2d');
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.font = 'bold 32px Arial';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.lineWidth = 2;
-      context.strokeStyle = 'black';
-      context.strokeText(text, 128, 128);
-      context.fillStyle = 'white';
-      context.fillText(text, 128, 128);
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.needsUpdate = true;
-      const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
-      const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.position.copy(position);
-      sprite.scale.set(scale, scale, 1);
-      return sprite;
-    }
+function createDimensionLabel(text, position, scale) {
+  // Estimate required font size (px) based on scale
+  const fontPx = Math.round(scale * 0.25); // 0.45 is a good ratio for 3D sprite scaling
+  // Measure text width to decide canvas size
+  let tmpCanvas = document.createElement('canvas');
+  let ctx = tmpCanvas.getContext('2d');
+  ctx.font = `bold ${fontPx}px Arial`;
+  const metrics = ctx.measureText(text);
+  const textW = Math.ceil(metrics.width);
+  const textH = Math.ceil(metrics.width);
+
+  // Canvas: add margin to avoid clipping
+  const pad = 16;
+  const canvasW = textW + pad * 2;
+  const canvasH = textH + pad * 2;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvasW, canvasH);
+  context.font = `bold ${fontPx}px Arial`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.lineWidth = 4;
+  context.strokeStyle = 'rgba(0,0,0,0.8)';
+  // Shadow for better contrast
+  context.shadowColor = "black";
+  context.shadowBlur = 4;
+  context.strokeText(text, canvasW / 2, canvasH / 2);
+  context.shadowBlur = 0;
+  context.fillStyle = 'white';
+  context.fillText(text, canvasW / 2, canvasH / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.position.copy(position);
+
+  // Set sprite scale so that its width in world units ≈ scale argument
+  // (Sprite default is 1x1 units for 256x256 px, so scale accordingly)
+  const ratio = canvasW / canvasH;
+  sprite.scale.set(scale * ratio, scale, 1);
+
+  return sprite;
+}
     
     function createCenterLabel(text, position) {
       const canvas = document.createElement('canvas');
@@ -1420,16 +1426,26 @@ function syncAltitude(newAltitude) {
   // Clamp altitude between 0 and 500
   newAltitude = Math.max(0, Math.min(500, newAltitude));
   drone.position.y = newAltitude;
+
+  // Panel 1 controls
   const altSlider = document.getElementById('droneAltitudeSlider');
   if (altSlider) {
     altSlider.value = newAltitude;
-    // For compatibility, if using the number input, update its value:
     const altNumberInput = document.getElementById('droneAltitudeValue');
     if (altNumberInput) altNumberInput.value = newAltitude.toFixed(1);
   }
   document.getElementById('altitudeValue').textContent = newAltitude.toFixed(1);
+
+  // Panel 2 controls (but DO NOT trigger calculations!)
+  const calcAltSlider = document.getElementById('calc1Altitude');
+  const calcAltNumber = document.getElementById('calc1AltitudeValue');
+  if (calcAltSlider) calcAltSlider.value = newAltitude;
+  if (calcAltNumber) calcAltNumber.value = newAltitude.toFixed(1);
+
+  // Update visuals (Panel 1)
   updateFOV();
   updateCamera();
+  // No updateCalc1AOV here!
 }
     
     // This function updates the right panel (Section 2) displays.
@@ -1445,61 +1461,64 @@ function syncAltitude(newAltitude) {
 
  
     // updateCalc1AOV updates the calculations in Section 2 using its own inputs.
-    function updateCalc1AOV() {
-      // Get values from Section 2 inputs.
-      const altitude = parseFloat(document.getElementById('calc1Altitude').value);
-      const fovWidth = parseFloat(document.getElementById('calc1FOVWidth').value);
-      
-      // Synchronize FOV width inputs.
-      syncFOVWidth(fovWidth);
-      
-      // Reflect the changes in Section 2 number inputs.
-      document.getElementById('calc1AltitudeValue').value = altitude.toFixed(1);
-      // (FOV width values are already synchronized)
-      
-      // Update drone altitude.
-      syncAltitude(altitude);
-      
-      // Update Section 1 FOV Width display.
-      document.getElementById('widthValue').textContent = fovWidth.toFixed(1);
-      
-      const aspectRatio = parseFloat(
-        document.querySelector('#controls .aspectRatioBtn.active').getAttribute('data-ratio')
-      );
-      
-      // Calculate horizontal, vertical and diagonal AOV using current altitude and fovWidth.
-      let horizontalAOV = 0, verticalAOV = 0, diagonalAOV = 0;
-      if (altitude > 0 && fovWidth > 0) {
-        horizontalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(fovWidth / (2 * altitude)));
-        verticalAOV   = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(horizontalAOV)/2) / aspectRatio));
-        const hTan = Math.tan(THREE.MathUtils.degToRad(horizontalAOV)/2);
-        const vTan = Math.tan(THREE.MathUtils.degToRad(verticalAOV)/2);
-        diagonalAOV   = THREE.MathUtils.radToDeg(2 * Math.atan(Math.sqrt(hTan * hTan + vTan * vTan)));
-      }
-      
-      // Update Section 2 displays.
-      document.getElementById('calc1HorizontalAOV').textContent = horizontalAOV.toFixed(1);
-      document.getElementById('calc1VerticalAOV').textContent = verticalAOV.toFixed(1);
-      document.getElementById('calc1DiagonalAOV').textContent = diagonalAOV.toFixed(1);
-      
-      // Synchronize Section 1 horizontal AOV slider and input.
-      document.getElementById('aov').value = horizontalAOV.toFixed(1);
-      document.getElementById('aovValue').value = horizontalAOV.toFixed(1);
-      
-      // Recalculate vertical and diagonal AOV for Section 1 FOV drawing.
-      const currentHorizontalAOV = horizontalAOV;
-      const currentVerticalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(currentHorizontalAOV)/2) / aspectRatio));
-      const currentHorTan = Math.tan(THREE.MathUtils.degToRad(currentHorizontalAOV)/2);
-      const currentVertTan = Math.tan(THREE.MathUtils.degToRad(currentVerticalAOV)/2);
-      const currentDiagonalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(Math.sqrt(currentHorTan * currentHorTan + currentVertTan * currentVertTan)));
-      
-      document.getElementById('vaovValue').textContent = currentVerticalAOV.toFixed(1);
-      document.getElementById('daovValue').textContent = currentDiagonalAOV.toFixed(1);
-      
-      // Update the FOV drawing.
-      updateFOV();
-      updateAltitudeAreaCurve();
-    }
+function updateCalc1AOV() {
+  // Get values from Section 2 inputs.
+  const altitude = parseFloat(document.getElementById('calc1Altitude').value);
+  const fovWidth = parseFloat(document.getElementById('calc1FOVWidth').value);
+
+  // Synchronize FOV width inputs.
+  syncFOVWidth(fovWidth);
+
+  // Reflect the changes in Section 2 number inputs.
+  document.getElementById('calc1AltitudeValue').value = altitude.toFixed(1);
+
+  // DO NOT call syncAltitude() here! Only update Panel 1's controls if you really want to.
+  // Instead, update Panel 1's altitude controls directly (optional):
+  document.getElementById('droneAltitudeSlider').value = altitude;
+  document.getElementById('droneAltitudeValue').value = altitude.toFixed(1);
+  document.getElementById('altitudeValue').textContent = altitude.toFixed(1);
+  drone.position.y = altitude;
+
+  // Update Section 1 FOV Width display.
+  document.getElementById('widthValue').textContent = fovWidth.toFixed(1);
+
+  const aspectRatio = parseFloat(
+    document.querySelector('#controls .aspectRatioBtn.active').getAttribute('data-ratio')
+  );
+
+  // Calculate horizontal, vertical and diagonal AOV using current altitude and fovWidth.
+  let horizontalAOV = 0, verticalAOV = 0, diagonalAOV = 0;
+  if (altitude > 0 && fovWidth > 0) {
+    horizontalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(fovWidth / (2 * altitude)));
+    verticalAOV   = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(horizontalAOV)/2) / aspectRatio));
+    const hTan = Math.tan(THREE.MathUtils.degToRad(horizontalAOV)/2);
+    const vTan = Math.tan(THREE.MathUtils.degToRad(verticalAOV)/2);
+    diagonalAOV   = THREE.MathUtils.radToDeg(2 * Math.atan(Math.sqrt(hTan * hTan + vTan * vTan)));
+  }
+
+  // Update Section 2 displays.
+  document.getElementById('calc1HorizontalAOV').textContent = horizontalAOV.toFixed(1);
+  document.getElementById('calc1VerticalAOV').textContent = verticalAOV.toFixed(1);
+  document.getElementById('calc1DiagonalAOV').textContent = diagonalAOV.toFixed(1);
+
+  // Synchronize Section 1 horizontal AOV slider and input.
+  document.getElementById('aov').value = horizontalAOV.toFixed(1);
+  document.getElementById('aovValue').value = horizontalAOV.toFixed(1);
+
+  // Recalculate vertical and diagonal AOV for Section 1 FOV drawing.
+  const currentHorizontalAOV = horizontalAOV;
+  const currentVerticalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(currentHorizontalAOV)/2) / aspectRatio));
+  const currentHorTan = Math.tan(THREE.MathUtils.degToRad(currentHorizontalAOV)/2);
+  const currentVertTan = Math.tan(THREE.MathUtils.degToRad(currentVerticalAOV)/2);
+  const currentDiagonalAOV = THREE.MathUtils.radToDeg(2 * Math.atan(Math.sqrt(currentHorTan * currentHorTan + currentVertTan * currentVertTan)));
+
+  document.getElementById('vaovValue').textContent = currentVerticalAOV.toFixed(1);
+  document.getElementById('daovValue').textContent = currentDiagonalAOV.toFixed(1);
+
+  // Update the FOV drawing.
+  updateFOV();
+  updateAltitudeAreaCurve();
+}
     
     document.getElementById('calc1FOVWidth').addEventListener('input', function() {
       const newWidth = parseFloat(this.value);
@@ -1955,30 +1974,65 @@ fovArea.position.y = 0.05;  // 5cm above ground
         cornerLabels.push(label);
       });
       
-      dimensionLabels.forEach(label => scene.remove(label));
-      dimensionLabels = [];
-      if(altitude > 0){
-        const midpointAB = new THREE.Vector3((corners[0].x + corners[1].x) / 2, 0, (corners[0].z + corners[1].z) / 2);
-        const midpointBC = new THREE.Vector3((corners[1].x + corners[2].x) / 2, 0, (corners[1].z + corners[2].z) / 2);
-        const offsetDistance = -5;
-        const directionAB = new THREE.Vector3(corners[1].x - corners[0].x, 0, corners[1].z - corners[0].z).normalize();
-        const perpendicularAB = new THREE.Vector3(-directionAB.z, 0, directionAB.x);
-        const directionBC = new THREE.Vector3(corners[2].x - corners[1].x, 0, corners[2].z - corners[1].z).normalize();
-        const perpendicularBC = new THREE.Vector3(-directionBC.z, 0, directionBC.x);
-        const offsetMidpointAB = midpointAB.clone().add(perpendicularAB.multiplyScalar(offsetDistance));
-        const offsetMidpointBC = midpointBC.clone().add(perpendicularBC.multiplyScalar(offsetDistance));
-        const baseAltitude = 100, minScale = 20, maxScale = 120;
-        let scaleFactor = altitude <= baseAltitude ? minScale : altitude >= 500 ? maxScale : minScale + ((altitude - baseAltitude) / (500 - baseAltitude)) * (maxScale - minScale);
-        const abLength = Math.sqrt(Math.pow(corners[1].x - corners[0].x, 2) + Math.pow(corners[1].z - corners[0].z, 2));
-        const abLabel = createDimensionLabel(`AB: ${abLength.toFixed(1)}m`, offsetMidpointAB, scaleFactor);
-        scene.add(abLabel);
-        dimensionLabels.push(abLabel);
-        const bcLength = Math.sqrt(Math.pow(corners[2].x - corners[1].x, 2) + Math.pow(corners[2].z - corners[1].z, 2));
-        const bcLabel = createDimensionLabel(`BC: ${bcLength.toFixed(1)}m`, offsetMidpointBC, scaleFactor);
-        scene.add(bcLabel);
-        dimensionLabels.push(bcLabel);
-      }
+
+
+dimensionLabels.forEach(label => scene.remove(label));
+dimensionLabels = [];
+if (altitude > 0) {
+  // Compute common label scale
+  let labelScale = Math.max(2, Math.min(Math.max(width, height) * 1, 220));
+
+  // Label for AB (Width)
+  if (showFOVWidthLabel) {
+    const abMid = new THREE.Vector3(
+      (corners[0].x + corners[1].x) / 2,
+      0,
+      (corners[0].z + corners[1].z) / 2
+    );
+    const abVec = new THREE.Vector3(
+      corners[1].x - corners[0].x, 0, corners[1].z - corners[0].z
+    ).normalize();
+    const abPerp = new THREE.Vector3(-abVec.z, 0, abVec.x);
+    const abOffset = Math.max(width, height) / 15;
+    const abPos = abMid.clone().add(abPerp.clone().multiplyScalar(abOffset));
+    const abLength = Math.sqrt(
+      Math.pow(corners[1].x - corners[0].x, 2) +
+      Math.pow(corners[1].z - corners[0].z, 2)
+    );
+    const abLabel = createDimensionLabel(
+      `FOV Width: ${abLength.toFixed(1)}m`, abPos, labelScale
+    );
+    scene.add(abLabel);
+    dimensionLabels.push(abLabel);
+  }
+
+  // Label for BC (Height)
+  if (showFOVHeightLabel) {
+    const bcMid = new THREE.Vector3(
+      (corners[1].x + corners[2].x) / 2,
+      0,
+      (corners[1].z + corners[2].z) / 2
+    );
+    const bcVec = new THREE.Vector3(
+      corners[2].x - corners[1].x, 0, corners[2].z - corners[1].z
+    ).normalize();
+    const bcPerp = new THREE.Vector3(-bcVec.z, 0, bcVec.x);
+    const bcOffset = Math.max(width, height) / 15;
+    const bcPos = bcMid.clone().add(bcPerp.clone().multiplyScalar(bcOffset));
+    const bcLength = Math.sqrt(
+      Math.pow(corners[2].x - corners[1].x, 2) +
+      Math.pow(corners[2].z - corners[1].z, 2)
+    );
+    const bcLabel = createDimensionLabel(
+      `FOV Height: ${bcLength.toFixed(1)}m`, bcPos, labelScale
+    );
+    scene.add(bcLabel);
+    dimensionLabels.push(bcLabel);
+  }
+}
       
+
+
       if(centerLabel) scene.remove(centerLabel);
       const centerPosition = new THREE.Vector3(drone.position.x, 0, drone.position.z);
       centerLabel = createCenterLabel('O', centerPosition);
@@ -2001,6 +2055,19 @@ fovArea.position.y = 0.05;  // 5cm above ground
     }
     
     init();
+
+// Add the event listeners for the "Show" buttons for Panel 1 FOV Width and Height
+document.getElementById('showFOVWidthBtn').addEventListener('click', function() {
+  showFOVWidthLabel = !showFOVWidthLabel;
+  this.textContent = showFOVWidthLabel ? 'Hide' : 'Show';
+  updateFOV();
+});
+document.getElementById('showFOVHeightBtn').addEventListener('click', function() {
+  showFOVHeightLabel = !showFOVHeightLabel;
+  this.textContent = showFOVHeightLabel ? 'Hide' : 'Show';
+  updateFOV();
+});
+
     animate();
     updateAltitudeAreaCurve();
     
@@ -2312,53 +2379,6 @@ function updateLanguageText() {
       highlightCurrentStep();
     }
 
-// Show hint modal when a hint icon is clicked
-document.querySelectorAll('.hint-icon').forEach(icon => {
-  icon.addEventListener('click', function(e) {
-    const hintModalId = icon.getAttribute('data-hint');
-    if (!hintModalId) return;
-    document.querySelectorAll('.hint-modal-overlay').forEach(modal => modal.classList.remove('active'));
-    const modal = document.getElementById(hintModalId);
-    if (modal) {
-      modal.classList.add('active');
-      // Accessibility: focus on modal for keyboard ESC
-      setTimeout(() => { try { modal.focus(); } catch {} }, 50);
-    }
-  });
-});
-
-// Close modal if close button is clicked or overlay is clicked
-document.querySelectorAll('.hint-modal-overlay').forEach(overlay => {
-  overlay.addEventListener('mousedown', function(e){
-    if (e.target === this) this.classList.remove('active');
-  });
-  overlay.querySelector('.closeHint').addEventListener('click', function(e){
-    overlay.classList.remove('active');
-  });
-  // Keyboard: ESC
-  overlay.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') overlay.classList.remove('active');
-  });
-});
-
-// --- Translation for hint modals on language switch ---
-function updateHintModalsLanguage() {
-  const toZh = languageToggle.textContent !== '繁體中文';
-  document.querySelectorAll('.hint-modal [data-i18n], .hint-modal [data-i18n-zh]').forEach(el => {
-    if (toZh) {
-      if (el.hasAttribute('data-i18n-zh')) el.textContent = el.getAttribute('data-i18n-zh');
-    } else {
-      if (el.hasAttribute('data-i18n')) el.textContent = el.getAttribute('data-i18n');
-    }
-  });
-}
-
-// Patch languageToggle to also update modals:
-languageToggle.addEventListener('click', updateHintModalsLanguage);
-
-// On page load, set correct language for modals
-updateHintModalsLanguage();
-
 
 function updateAltitudeAreaCurve() {
   const canvas = document.getElementById('altitudeAreaCurve');
@@ -2410,7 +2430,7 @@ function updateAltitudeAreaCurve() {
   ctx.stroke();
 
   // Y ticks and numbers
-  ctx.font = "11px Arial";
+  ctx.font = "8px Arial";
   ctx.textAlign="right";
   ctx.fillStyle="#aaa";
   for (let i=0;i<=4;i++) {
