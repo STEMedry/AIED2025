@@ -4,21 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=0.9" />
   <title>GenAI-Driven Drone Simulations</title>
-  <!-- Import Google Fonts -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet" />
   <style>
-    /* Reset and Base Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
       font-family: 'Roboto', sans-serif;
-      user-select: none; /* Disable text selection */
-    }
-    body {
+      user-select: none;
       background: #f0f8ff;
       background-image: linear-gradient(to right, #d3d3d3 1px, transparent 1px),
                         linear-gradient(to bottom, #d3d3d3 1px, transparent 1px);
@@ -27,13 +20,13 @@
       display: flex;
       flex-direction: column;
     }
-   .container {
+    .container {
       flex: 1;
       padding: 1rem;
       max-width: 1200px;
       margin: 0.1rem auto;
+      width: 100%;
     }
-    
     /* Introduction Section */
     .intro {
       display: flex;
@@ -44,6 +37,9 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       position: relative;
       align-items: stretch;
+      width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
     }
     .intro-left {
       width: 25%;
@@ -62,7 +58,7 @@
     .project-logo {
       height: 100%;
       width: auto;
-      max-height: 50px; /* Adjust as needed to match the right part */
+      max-height: 50px;
     }
     .intro h2 {
       font-size: 2.2rem;
@@ -73,7 +69,6 @@
       font-size: 1.3rem;
       line-height: 1.2;
     }
-    /* Language Switch inside Introduction Section */
     .intro .language-switch {
       position: absolute;
       top: 0.1rem;
@@ -92,102 +87,137 @@
     .intro .language-switch button:hover {
       background: #00509e;
     }
-    
-    /* Challenges Section */
-    .challenges {
-      text-align: left;
-      margin-bottom: 1rem;
-    }
-    /* Container to hold the challenges text and the video box side by side */
+
+    /* Strategies Row */
     .challenges-container {
       display: flex;
-      gap: 1rem;
-      align-items: flex-start;
+      gap: 1.2rem;
+      align-items: stretch;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      min-height: unset;
+      margin-bottom: 1rem;
     }
-    /* Left side: challenges description */
-    .challenges-text {
-      flex: 1;
+    /* Strategies Box */
+    .strategies-box {
+      background: #e8f5e9;
+      border: 2px solid #b2dfdb;
+      border-radius: 12px;
+      /* Reduce only top and bottom padding! */
+      padding: 0.2rem 1rem 0.2rem 1rem; /* was 0.6rem 1rem */
+      box-shadow: 0 3px 12px rgba(44, 108, 79, 0.09);
+      min-width: 200px;
+      width: 60%;
+      max-width: 820px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
     }
-    .challenges h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: #003366;
+    #challenges-title {
+      color: #256029;
+      font-size: 1.17rem;
+      margin-top: 0.2rem;   /* was 0.6rem */
+      margin-bottom: 0.2rem; /* was 0.6rem */
     }
-    .challenges p {
-      font-size: 1rem;
-      line-height: 1.4;
-    }
-    .challenges ul {
+    .strategies-list {
       list-style-type: none;
       padding-left: 0;
+      font-size: 1.07rem;
     }
-    .challenges li {
+    .strategies-list li {
       margin-bottom: 0.5rem;
-      font-size: 1.1rem;
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      white-space: nowrap;
     }
-    .challenges li::before {
-      content: "• ";
-      color: #003366;
+    .strategies-list li:last-child {
+      margin-bottom: 0 !important;  /* Remove gap after last item */
     }
-    .challenges li strong {
+    .strategies-list li strong {
       font-weight: bold;
+      color: #11805a;
+      margin-right: 0.4em;
+      min-width: 10.2em;
+      flex-shrink: 0;
     }
-    
-    /* Video Box styling */
-    .video-box {
-      /* Adjust these values to change the size/dimensions of the video box */
-      width: 40%;
-      min-width: 300px;
-      height: auto;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+    .strategies-list li span {
+      color: #222;
+      font-weight: 400;
+      font-size: 1em;
+      line-height: 1.32;
+      white-space: nowrap;
       overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-overflow: ellipsis;
+      display: block;
     }
-    /* Ensure the embedded YouTube video fits the box responsively */
+    /* Video Box */
+    .video-box {
+      width: 40%;
+      min-width: 320px;
+      max-width: 600px;
+      background: #fff;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      transition: height 0.35s;
+      box-sizing: border-box;
+    }
     .video-box iframe {
       width: 100%;
-      height: 200px; /* Adjust height as needed */
+      height: 100%;
       border: none;
+      display: block;
+      background: #000;
     }
-    
+
     /* Simulations Section */
-    .simulations {
-      display: flex;
-      gap: 0.8rem;
-      justify-content: center;
-      /* Align all five boxes in one row */
-      flex-wrap: nowrap;
-      margin-bottom: 0rem;
-    }
+.simulations {
+  max-width: 820px; /* match .strategies-box max-width */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 0rem;
+}
     .simulation {
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       text-align: center;
-      padding: 0.5rem;
-      flex: 1;
-      min-width: 240px;
-      max-width: 260px;
+      padding: 0.2rem;
+      flex: 1 1 0;
+      min-width: 220px;
       height: auto;
       transition: transform 0.3s, box-shadow 0.3s;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
+      max-width: unset;
     }
     .simulation:hover {
       transform: scale(1.03);
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
     .simulation .icon {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 0.5rem;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 0rem;
       transition: transform 0.5s;
     }
-    /* Rotation Animation */
     @keyframes rotate-icon {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -196,40 +226,37 @@
       animation: rotate-icon 2s linear infinite;
     }
     .simulation h3 {
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       margin-bottom: 0.2rem;
       color: #003366;
     }
     .simulation p {
-      font-size: 0.9rem;
-      line-height: 1.2;
+      font-size: 0.89rem;
+      line-height: 1.17;
       margin-bottom: 0.2rem;
     }
-    /* Pedagogical approaches box styling */
     .pedagogy {
       margin-top: 0.1rem;
-      font-size: 0.85rem;
+      font-size: 0.80rem;
       color: #555;
       font-style: italic;
       border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 0.5rem;
+      padding: 0.45rem;
       background-color: #f9f9f9;
-      line-height: 1; /* Ensures consistent line spacing */
+      line-height: 1;
     }
-    
     .pedagogy-title {
       display: block;
       margin-bottom: 0.1rem;
       font-weight: 700;
       text-decoration: underline;
     }
-    
     .pedagogy-item {
       display: block;
-      margin-bottom: 0.1rem; /* Adjust to your liking */
+      margin-bottom: 0.1rem;
     }
-        
+
     /* Footer */
     footer {
       display: flex;
@@ -255,8 +282,46 @@
     .acknowledgement {
       font-size: 0.8rem;
       color: #c0c0c0;
+      margin-bottom: 0.2rem;
     }
-    
+
+    @media (max-width: 1050px) {
+      .simulations {
+        gap: 0.45rem;
+      }
+      .simulation {
+        min-width: 140px;
+        max-width: 160px;
+      }
+      .simulation .icon {
+        width: 82px;
+        height: 82px;
+      }
+      .challenges-container { max-width: 1000px; }
+    }
+    @media (max-width: 900px) {
+      .simulations {
+        flex-direction: column;
+        align-items: center;
+      }
+      .simulation {
+        max-width: 95%;
+        min-width: 180px;
+        margin-bottom: 0.7rem;
+      }
+      .challenges-container {
+        flex-direction: column;
+        gap: 1.1rem;
+      }
+      .strategies-box, .video-box {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+      }
+      .video-box {
+        height: 240px;
+      }
+    }
     @media (max-width: 768px) {
       .intro {
         flex-direction: column;
@@ -265,19 +330,34 @@
         width: 100%;
         padding: 0;
       }
+      .challenges-container {
+        flex-direction: column;
+        gap: 1.1rem;
+      }
+      .strategies-box, .video-box {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+      }
+      .video-box {
+        height: 180px;
+      }
       .simulations {
         flex-direction: column;
         align-items: center;
       }
       .simulation {
         max-width: 100%;
+        min-width: 140px;
       }
-      /* Stack the challenges container vertically on smaller screens */
-      .challenges-container {
-        flex-direction: column;
+    }
+    @media (max-width: 520px) {
+      .simulation .icon {
+        width: 68px;
+        height: 68px;
       }
-      .video-box iframe {
-        height: 250px; /* Increase height if needed for mobile screens */
+      .video-box {
+        height: 140px;
       }
     }
   </style>
@@ -287,7 +367,6 @@
     <!-- Introduction Section with Language Switch inside -->
     <div class="intro">
       <div class="intro-left">
-        <!-- Replace the SVG below with your actual project logo if available -->
         <img src="Project_Logo.png" width="200" height="150" alt="Project Logo">
       </div>
       <div class="intro-right">
@@ -300,22 +379,35 @@
         </p>
       </div>
     </div>
-    <!-- Challenges Section -->
+    <!-- Strategies Section (in a colored box) and Video Box Side by Side -->
     <div class="challenges">
-      <!-- Using a flex container to hold both the challenge text and the video box -->
       <div class="challenges-container">
-        <div class="challenges-text">
+        <div class="strategies-box" id="strategies-box">
           <h2 id="challenges-title">This simulation supports drone education strategies, including:</h2>
-          <ul id="challenges-list">
-            <li><strong>Hands-on Practice: </strong> Using simulation and reflection to master drone operation skills.</li>
-            <li><strong>Abstract conceptualization:</strong> Applying existing mathematical knowledge to understand satellite positioning principles.</li>
-            <li><strong>Scaffolding learning:</strong> Building spatial understanding through layered game challenges.</li>
-            <li><strong>Virtual experimentation: </strong> Testing the effects of changing variables and exploring their interactions.</li>
-            <li><strong>Iterative learning:</strong> Providing code preview features to enhance revision and improvement efficiency.</li>
+          <ul class="strategies-list" id="challenges-list">
+            <li>
+              <strong>1. Hands-on Practice:</strong>
+              <span>Use simulation to master drone skills.</span>
+            </li>
+            <li>
+              <strong>2. Abstract Conceptualization:</strong>
+              <span>Apply math to understand satellite positioning.</span>
+            </li>
+            <li>
+              <strong>3. Scaffolded Learning:</strong>
+              <span>Build spatial skills via game challenges.</span>
+            </li>
+            <li>
+              <strong>4. Virtual Experimentation:</strong>
+              <span>Test and explore variable effects.</span>
+            </li>
+            <li>
+              <strong>5. Iterative Learning:</strong>
+              <span>Preview code to improve efficiently.</span>
+            </li>
           </ul>
         </div>
-        <div class="video-box">
-          <!-- Replace VIDEO_ID_HERE in the URL with your YouTube video ID -->
+        <div class="video-box" id="video-box">
           <iframe src="https://www.youtube.com/embed/e117aBxZ9Ac" title="YouTube video player" allowfullscreen></iframe>
         </div>
       </div>
@@ -335,7 +427,6 @@
           <span class="pedagogy-item">Scenario Visualization</span>
         </div>
       </div>
-
       <!-- Virtual Flight -->
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='30' fill='gray'/%3E%3Ccircle cx='25' cy='25' r='10' fill='black'/%3E%3Ccircle cx='75' cy='25' r='10' fill='black'/%3E%3Ccircle cx='25' cy='75' r='10' fill='black'/%3E%3Ccircle cx='75' cy='75' r='10' fill='black'/%3E%3C/svg%3E" alt="Quadcopter Icon">
@@ -400,7 +491,7 @@
     </div>
   </footer>
   <script>
-    // Translation Data with HTML for pedagogy content
+    // Translation Data with revised short descriptions for one-line display
     const translations = {
       en: {
         button: "繁體中文",
@@ -408,11 +499,11 @@
         intro: "This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education. (Recommended using a computer browser or iPad.)",
         challengesTitle: "This simulation supports drone education strategies, including:",
         challenges: [
-          { strong: "Concrete experience and reflection:", text: " Using simulation exercises and reflection to master drone operation skills." },
-          { strong: "Abstract conceptualization:", text: " Applying existing mathematical knowledge to understand satellite positioning principles." },
-          { strong: "Scaffolding learning:", text: " Building spatial understanding through layered game challenges." },
-          { strong: "Virtual experimentation:", text: " Testing the effects of changing variables and exploring their interactions." },
-          { strong: "Iterative learning:", text: " Providing code preview features to enhance revision and improvement efficiency." }
+          { strong: "1. Hands-on Practice:", text: "Use simulation to master drone skills." },
+          { strong: "2. Abstract Conceptualization:", text: "Apply math to understand satellite positioning." },
+          { strong: "3. Scaffolded Learning:", text: "Build spatial skills via game challenges." },
+          { strong: "4. Virtual Experimentation:", text: "Test and explore variable effects." },
+          { strong: "5. Iterative Learning:", text: "Preview code to improve efficiently." }
         ],
         spTitle: "Satellite Positioning",
         spDesc: "Explore GNSS concepts in a 2D environment with satellite movements and drone positioning.",
@@ -438,11 +529,11 @@
         intro: "本項目基於混合智能與 AI-TPACK 理論框架，將體驗式學習循環的教學策略轉化為互動模擬，促進探究式學習，實現具有成本效益的跨學科無人機 STEM 教育（建議使用電腦瀏覽器或 iPad 進行體驗）。",
         challengesTitle: "本模擬支援無人機教育的策略包括：",
         challenges: [
-          { strong: "具體經驗與反思：", text: " 透過模擬練習與反思，掌握無人機操作技能。" },
-          { strong: "抽象概念化：", text: " 運用已有數學知識，理解衛星定位原理。" },
-          { strong: "鷹架式學習：", text: " 藉由分層遊戲挑戰，建立空間理解能力。" },
-          { strong: "虛擬實驗：", text: " 測試變數調整的效果，探索變數間的相互作用。" },
-          { strong: "迭代學習：", text: " 提供程式預覽功能，提升修正與改良的效率。" }
+          { strong: "1. 具體經驗與反思：", text: "用模擬掌握無人機操作技能。" },
+          { strong: "2. 抽象概念化：", text: "運用數學理解衛星定位。" },
+          { strong: "3. 鷹架式學習：", text: "以遊戲挑戰建立空間能力。" },
+          { strong: "4. 虛擬實驗：", text: "探索變數效果與互動。" },
+          { strong: "4. 迭代學習：", text: "預覽程式提升修正效率。" }
         ],
         spTitle: "衛星定位",
         spDesc: "在 2D 環境中探索 GNSS 概念，實時觀察衛星運動和無人機定位。",
@@ -464,68 +555,51 @@
       }
     };
 
-    // Set default language
-    let currentLang = 'en'; // Default language is English
-
-    // Function to toggle language and update all content with innerHTML for pedagogy boxes
-    function toggleLanguage() {
-      // Toggle between 'en' and 'zh'
-      currentLang = currentLang === 'en' ? 'zh' : 'en';
+    let currentLang = 'en';
+    function renderChallengesList() {
       const translation = translations[currentLang];
-
-      // Update button text
-      document.getElementById('language-toggle').innerText = translation.button;
-
-      // Update Intro
-      document.getElementById('intro-title').innerText = translation.introTitle;
-      document.getElementById('intro-text').innerText = translation.intro;
-
-      // Update Challenges
-      document.getElementById('challenges-title').innerText = translation.challengesTitle;
       const challengesList = document.getElementById('challenges-list');
-      challengesList.innerHTML = ''; // Clear existing list
+      challengesList.innerHTML = '';
       translation.challenges.forEach(item => {
         const li = document.createElement('li');
         const strong = document.createElement('strong');
         strong.innerText = item.strong;
         li.appendChild(strong);
-        li.innerHTML += item.text;
+        const descSpan = document.createElement('span');
+        descSpan.innerText = item.text;
+        li.appendChild(descSpan);
         challengesList.appendChild(li);
       });
-
-      // Update Simulations
-      // Satellite Positioning
+    }
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'zh' : 'en';
+      const translation = translations[currentLang];
+      document.getElementById('language-toggle').innerText = translation.button;
+      document.getElementById('intro-title').innerText = translation.introTitle;
+      document.getElementById('intro-text').innerText = translation.intro;
+      document.getElementById('challenges-title').innerText = translation.challengesTitle;
+      renderChallengesList();
       document.getElementById('sp-title').innerText = translation.spTitle;
       document.getElementById('sp-desc').innerText = translation.spDesc;
       document.getElementById('sp-pedagogy').innerHTML = translation.spPedagogy;
-
-      // Virtual Flight
       document.getElementById('vf-title').innerText = translation.vfTitle;
       document.getElementById('vf-desc').innerText = translation.vfDesc;
       document.getElementById('vf-pedagogy').innerHTML = translation.vfPedagogy;
-
-      // QuadPhysics
       document.getElementById('qp-title').innerText = translation.qpTitle;
       document.getElementById('qp-desc').innerText = translation.qpDesc;
       document.getElementById('qp-pedagogy').innerHTML = translation.qpPedagogy;
-
-      // Dronography AOV
       document.getElementById('da-title').innerText = translation.daTitle;
       document.getElementById('da-desc').innerText = translation.daDesc;
       document.getElementById('da-pedagogy').innerHTML = translation.daPedagogy;
-
-      // Code Simulation
       document.getElementById('cs-title').innerText = translation.csTitle;
       document.getElementById('cs-desc').innerText = translation.csDesc;
       document.getElementById('cs-pedagogy').innerHTML = translation.csPedagogy;
-
-      // Update Footer
       document.getElementById('footer-text').innerText = translation.footer;
       document.getElementById('acknowledgement-text').innerText = translation.acknowledgement;
     }
+    window.addEventListener('DOMContentLoaded', function() {
+      renderChallengesList();
+    });
   </script>
 </body>
 </html>
-
-
-
