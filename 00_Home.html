@@ -106,7 +106,7 @@
       border: 2px solid #b2dfdb;
       border-radius: 12px;
       /* Reduce only top and bottom padding! */
-      padding: 0.2rem 1rem 0.2rem 1rem; /* was 0.6rem 1rem */
+      padding: 0.2rem 1rem 0.2rem 1rem;
       box-shadow: 0 3px 12px rgba(44, 108, 79, 0.09);
       min-width: 200px;
       width: 60%;
@@ -119,8 +119,8 @@
     #challenges-title {
       color: #256029;
       font-size: 1.17rem;
-      margin-top: 0.2rem;   /* was 0.6rem */
-      margin-bottom: 0.2rem; /* was 0.6rem */
+      margin-top: 0.2rem;
+      margin-bottom: 0.2rem;
     }
     .strategies-list {
       list-style-type: none;
@@ -135,7 +135,7 @@
       white-space: nowrap;
     }
     .strategies-list li:last-child {
-      margin-bottom: 0 !important;  /* Remove gap after last item */
+      margin-bottom: 0 !important;
     }
     .strategies-list li strong {
       font-weight: bold;
@@ -180,17 +180,17 @@
     }
 
     /* Simulations Section */
-.simulations {
-  max-width: 820px; /* match .strategies-box max-width */
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  gap: 0.8rem;
-  justify-content: center;
-  flex-wrap: nowrap;
-  margin-bottom: 0rem;
-}
+    .simulations {
+      max-width: 820px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: nowrap;
+      margin-bottom: 0.2rem; /* Reduced from 0rem for less gap */
+    }
     .simulation {
       background: white;
       border: 1px solid #ddd;
@@ -385,26 +385,7 @@
         <div class="strategies-box" id="strategies-box">
           <h2 id="challenges-title">This simulation supports drone education strategies, including:</h2>
           <ul class="strategies-list" id="challenges-list">
-            <li>
-              <strong>1. Hands-on Practice:</strong>
-              <span>Use simulation to master drone skills.</span>
-            </li>
-            <li>
-              <strong>2. Abstract Conceptualization:</strong>
-              <span>Apply math to understand satellite positioning.</span>
-            </li>
-            <li>
-              <strong>3. Scaffolded Learning:</strong>
-              <span>Build spatial skills via game challenges.</span>
-            </li>
-            <li>
-              <strong>4. Virtual Experimentation:</strong>
-              <span>Test and explore variable effects.</span>
-            </li>
-            <li>
-              <strong>5. Iterative Learning:</strong>
-              <span>Preview code to improve efficiently.</span>
-            </li>
+            <!-- Will be rendered by JS -->
           </ul>
         </div>
         <div class="video-box" id="video-box">
@@ -419,7 +400,7 @@
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='blue'/%3E%3Cline x1='30' y1='30' x2='70' y2='70' stroke='white' stroke-width='2'/%3E%3Cline x1='70' y1='30' x2='30' y2='70' stroke='white' stroke-width='2'/%3E%3C/svg%3E" alt="Satellite Icon">
         <h3 id="sp-title">Satellite Positioning</h3>
         <p id="sp-desc">
-          Explore GNSS concepts in a 2D environment with satellite movements and drone positioning.
+          Explore GNSS concepts with satellite movements and drone positioning.
         </p>
         <div class="pedagogy" id="sp-pedagogy">
           <span class="pedagogy-title">Pedagogical Approaches</span>
@@ -432,7 +413,7 @@
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='30' fill='gray'/%3E%3Ccircle cx='25' cy='25' r='10' fill='black'/%3E%3Ccircle cx='75' cy='25' r='10' fill='black'/%3E%3Ccircle cx='25' cy='75' r='10' fill='black'/%3E%3Ccircle cx='75' cy='75' r='10' fill='black'/%3E%3C/svg%3E" alt="Quadcopter Icon">
         <h3 id="vf-title">Virtual Flight</h3>
         <p id="vf-desc">
-          Practice piloting in a virtual space, mastering control dimensions and decision-making skills.
+          Practice piloting in a virtual space, mastering control dimensions and skills.
         </p>
         <div class="pedagogy" id="vf-pedagogy">
           <span class="pedagogy-title">Pedagogical Approaches</span>
@@ -458,7 +439,7 @@
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='slateblue'/%3E%3Crect x='35' y='35' width='30' height='30' fill='white'/%3E%3C/svg%3E" alt="Drone Camera Icon">
         <h3 id="da-title">Dronography AOV</h3>
         <p id="da-desc">
-          Explore AOV, FOV, and altitude to virtually measure real-world structures and areas.
+          Explore AOV, FOV, and altitude to virtually measure area captured and building dimensions.
         </p>
         <div class="pedagogy" id="da-pedagogy">
           <span class="pedagogy-title">Pedagogical Approaches</span>
@@ -471,7 +452,7 @@
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='tomato'/%3E%3Ctext x='50%25' y='55%25' fill='white' font-size='40' text-anchor='middle' font-family='Arial'%3E{+}%3C/text%3E%3C/svg%3E" alt="Code Icon">
         <h3 id="cs-title">Code Simulation</h3>
         <p id="cs-desc">
-          Create and refine drone navigation code in 3D with real-time path previews.
+          Use path preview function to create and refine drone navigation programme.
         </p>
         <div class="pedagogy" id="cs-pedagogy">
           <span class="pedagogy-title">Pedagogical Approaches</span>
@@ -491,7 +472,7 @@
     </div>
   </footer>
   <script>
-    // Translation Data with revised short descriptions for one-line display
+    // Translation Data - UPDATED bullets per user request
     const translations = {
       en: {
         button: "繁體中文",
@@ -499,26 +480,26 @@
         intro: "This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education. (Recommended using a computer browser or iPad.)",
         challengesTitle: "This simulation supports drone education strategies, including:",
         challenges: [
-          { strong: "1. Hands-on Practice:", text: "Use simulation to master drone skills." },
-          { strong: "2. Abstract Conceptualization:", text: "Apply math to understand satellite positioning." },
-          { strong: "3. Scaffolded Learning:", text: "Build spatial skills via game challenges." },
-          { strong: "4. Virtual Experimentation:", text: "Test and explore variable effects." },
-          { strong: "5. Iterative Learning:", text: "Preview code to improve efficiently." }
+          { strong: "1. Hands-on Practice:", text: "Use virtual flights to develop piloting skills." },
+          { strong: "2. Abstract Concepts:", text: "Apply math to understand satellite positioning principles." },
+          { strong: "3. Scaffolded Learning:", text: "Build spatial understanding through layered game challenges." },
+          { strong: "4. Virtual Experiments:", text: "Test variable interactions and explore causal relationships." },
+          { strong: "5. Iterative Improvement:", text: "Preview code outcome to enhance refinement efficiency." }
         ],
         spTitle: "Satellite Positioning",
-        spDesc: "Explore GNSS concepts in a 2D environment with satellite movements and drone positioning.",
+        spDesc: "Explore GNSS concepts with satellite movements and drone positioning.",
         spPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Inquiry-based Learning</span><span class="pedagogy-item">Scenario Visualization</span>',
         vfTitle: "Virtual Flight",
-        vfDesc: "Practice piloting in a virtual space, mastering control dimensions and decision-making skills.",
+        vfDesc: "Practice piloting in a virtual space, mastering control dimensions and skills.",
         vfPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Immersive Learning</span><span class="pedagogy-item">Competency-based Learning</span>',
         qpTitle: "QuadPhysics",
         qpDesc: "Explore weight, gravity, and propeller speed to simulate planetary conditions.",
         qpPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Discovery Learning</span><span class="pedagogy-item">Reflective Visualization</span>',
         daTitle: "Dronography AOV",
-        daDesc: "Explore AOV, FOV, and altitude to virtually measure real-world structures and areas.",
+        daDesc: "Explore AOV, FOV, and altitude to virtually measure area captured and building dimensions.",
         daPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Computational Thinking</span><span class="pedagogy-item">Scenario-based Learning</span>',
         csTitle: "Code Simulation",
-        csDesc: "Create and refine drone navigation code in 3D with real-time path previews.",
+        csDesc: "Use path preview function to create and refine drone navigation programme.",
         csPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Problem-based Learning</span><span class="pedagogy-item">Algorithm Design</span>',
         footer: "© 2025 AI-Facilitated Dronagogy. All rights reserved.",
         acknowledgement: "(Simulations generated with the assistance of GenAI chatbot o1-mini of the POE platform.)"
@@ -529,26 +510,26 @@
         intro: "本項目基於混合智能與 AI-TPACK 理論框架，將體驗式學習循環的教學策略轉化為互動模擬，促進探究式學習，實現具有成本效益的跨學科無人機 STEM 教育（建議使用電腦瀏覽器或 iPad 進行體驗）。",
         challengesTitle: "本模擬支援無人機教育的策略包括：",
         challenges: [
-          { strong: "1. 具體經驗與反思：", text: "用模擬掌握無人機操作技能。" },
-          { strong: "2. 抽象概念化：", text: "運用數學理解衛星定位。" },
-          { strong: "3. 鷹架式學習：", text: "以遊戲挑戰建立空間能力。" },
-          { strong: "4. 虛擬實驗：", text: "探索變數效果與互動。" },
-          { strong: "4. 迭代學習：", text: "預覽程式提升修正效率。" }
+          { strong: "1. 實務操作：", text: "透過虛擬飛行，掌握操控技巧。" },
+          { strong: "2. 抽象概念：", text: "運用數學知識理解衛星定位原理。" },
+          { strong: "3. 鷹架式學習：", text: "透過層層遞進的遊戲挑戰，建立空間理解。" },
+          { strong: "4. 虛擬實驗：", text: "測試變數互動，探索因果關係。" },
+          { strong: "5. 反覆修正：", text: "預覽程式碼結果，提升優化效率。" }
         ],
         spTitle: "衛星定位",
-        spDesc: "在 2D 環境中探索 GNSS 概念，實時觀察衛星運動和無人機定位。",
+        spDesc: "探索 GNSS 概念，觀察衛星運動和無人機定位。",
         spPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">探究式學習</span><span class="pedagogy-item">場景可視化</span>',
         vfTitle: "虛擬飛行",
-        vfDesc: "在 3D 虛擬空間中練習無人機駕駛，掌握控制維度和決策能力。",
+        vfDesc: "在虛擬空間中練習無人機駕駛，掌握控制維度和技巧。",
         vfPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">沉浸式學習</span><span class="pedagogy-item">能力為本學習</span>',
         qpTitle: "四旋翼物理",
-        qpDesc: "模擬不同行星條件，實驗重量、重力和螺旋槳速度等物理概念。",
+        qpDesc: "模擬不同星體條件，實驗重量、重力和旋翼速度等物理概念。",
         qpPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">發現式學習</span><span class="pedagogy-item">反思性可視化</span>',
         daTitle: "無人機攝影視角",
-        daDesc: "探索視角、視野和高度之間的關係，虛擬測量實際結構和面積。",
+        daDesc: "探索視角、視野和高度之間的關係，虛擬測量可攝面積和建築物大小。",
         daPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">計算思維</span><span class="pedagogy-item">情境模擬學習</span>',
         csTitle: "代碼模擬",
-        csDesc: "在 3D 環境中設計、測試和完善自主導航代碼，提供實時路徑預覽。",
+        csDesc: "使用路徑預覽功能，設計、測試和修訂無人機巡航編程。",
         csPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">問題導向學習</span><span class="pedagogy-item">算法設計</span>',
         footer: "© 2025 AI-支援無人機教學。版權所有。",
         acknowledgement: "(模擬由 POE 平台的 GenAI 聊天機器人 o1-mini 協助生成。)"
