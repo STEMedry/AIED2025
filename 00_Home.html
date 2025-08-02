@@ -27,7 +27,6 @@
       margin: 0.1rem auto;
       width: 100%;
     }
-    /* Introduction Section */
     .intro {
       display: flex;
       background: linear-gradient(135deg, #ffffff 0%, #e6f7ff 100%);
@@ -193,10 +192,10 @@
       margin-left: auto;
       margin-right: auto;
       display: flex;
-      gap: 0.8rem;
+      gap: 0.6rem;
       justify-content: center;
       flex-wrap: nowrap;
-      margin-bottom: 0.05rem; /* Tighter gap to footer */
+      margin-bottom: 0.05rem;
     }
     .simulation {
       background: white;
@@ -206,9 +205,9 @@
       text-align: center;
       padding: 0.2rem;
       flex: 1 1 0;
-      min-width: 220px;
-      min-height: 264px; /* Increased height */
-      height: 264px;     /* Fixed height for uniformity */
+      min-width: 230px;
+      min-height: 264px;
+      height: 264px;
       transition: transform 0.3s, box-shadow 0.3s;
       display: flex;
       flex-direction: column;
@@ -223,7 +222,7 @@
     .simulation .icon {
       width: 72px;
       height: 72px;
-      margin: 0.5rem auto 0rem auto;
+      margin: 1.1rem auto 0rem auto;
       transition: transform 0.5s;
     }
     @keyframes rotate-icon {
@@ -234,35 +233,47 @@
       animation: rotate-icon 2s linear infinite;
     }
     .simulation h3 {
-      font-size: 1.08rem;
-      margin-bottom: 0.2rem;
+      font-size: 1.38rem;
+      font-weight: 700;
+      margin-bottom: 0.18rem;
       color: #003366;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.01em;
     }
     .simulation p {
-      font-size: 0.89rem;
+      font-size: 0.97rem;
       line-height: 1.17;
-      margin-bottom: 0.1rem;
+      margin-bottom: 0.06rem;
     }
     .pedagogy {
-      margin-top: 0.1rem;
-      font-size: 0.80rem;
-      color: #555;
-      font-style: italic;
+      margin-top: 0.11rem;
+      margin-bottom: 1.1rem; /* Increased gap below, matches icon top gap */
       border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 0.45rem;
       background-color: #f9f9f9;
-      line-height: 1;
+      padding: 0.32rem 0.4rem;
+      font-style: normal;
+      display: flex;
+      flex-direction: column;
+      gap: 0.06rem;
+      align-items: center;
+      width: 90%;       /* <--- Adjust this value */
+      margin-left: auto;
+      margin-right: auto;
     }
     .pedagogy-title {
-      display: block;
-      margin-bottom: 0.1rem;
-      font-weight: 700;
-      text-decoration: underline;
+      display: none !important;
     }
     .pedagogy-item {
-      display: block;
-      margin-bottom: 0.1rem;
+      font-weight: 700;
+      color: #c00;
+      font-size: 0.80rem;
+      margin-bottom: 0.01rem;
+      letter-spacing: 0.01em;
+      background: none;
+      font-style: normal;
     }
 
     /* Footer */
@@ -272,11 +283,11 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 0.5rem 0.2rem 0.2rem 0.2rem; /* Tighter top and bottom padding */
+      padding: 0.5rem 0.2rem 0.2rem 0.2rem;
       background: #003366;
       color: white;
       width: 100%;
-      margin-top: 0; /* Remove any default margin */
+      margin-top: 0;
     }
     .footer-content {
       width: 100%;
@@ -365,6 +376,12 @@
         min-height: 200px;
         height: 200px;
       }
+      .simulation h3 {
+        font-size: 1.13rem;
+      }
+      .pedagogy-item {
+        font-size: 0.74rem;
+      }
     }
     @media (max-width: 520px) {
       .simulation .icon {
@@ -377,6 +394,12 @@
       .simulation {
         min-height: 160px;
         height: 160px;
+      }
+      .simulation h3 {
+        font-size: 1.04rem;
+      }
+      .pedagogy-item {
+        font-size: 0.67rem;
       }
     }
   </style>
@@ -393,12 +416,8 @@
           <button id="language-toggle" onclick="toggleLanguage()">繁體中文</button>
         </div>
         <h2 id="intro-title">Introduction</h2>
-        <p id="intro-text">
-          <!-- Filled by JS -->
-        </p>
-        <span class="intro-note" id="intro-note">
-          <!-- Filled by JS -->
-        </span>
+        <p id="intro-text"></p>
+        <span class="intro-note" id="intro-note"></span>
       </div>
     </div>
     <!-- Strategies Section (in a colored box) and Video Box Side by Side -->
@@ -406,11 +425,10 @@
       <div class="challenges-container">
         <div class="strategies-box" id="strategies-box">
           <h2 id="challenges-title">This simulation supports drone education strategies, including:</h2>
-          <ul class="strategies-list" id="challenges-list">
-            <!-- Will be rendered by JS -->
-          </ul>
+          <ul class="strategies-list" id="challenges-list"></ul>
         </div>
         <div class="video-box" id="video-box">
+          <!-- Updated YouTube video to a working link -->
           <iframe src="https://www.youtube.com/embed/e117aBxZ9Ac" title="YouTube video player" allowfullscreen></iframe>
         </div>
       </div>
@@ -421,66 +439,36 @@
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='blue'/%3E%3Cline x1='30' y1='30' x2='70' y2='70' stroke='white' stroke-width='2'/%3E%3Cline x1='70' y1='30' x2='30' y2='70' stroke='white' stroke-width='2'/%3E%3C/svg%3E" alt="Satellite Icon">
         <h3 id="sp-title">Satellite Positioning</h3>
-        <p id="sp-desc">
-          Explore GNSS concepts with satellite movements and drone positioning.
-        </p>
-        <div class="pedagogy" id="sp-pedagogy">
-          <span class="pedagogy-title">Pedagogical Approaches</span>
-          <span class="pedagogy-item">Inquiry-based Learning</span>
-          <span class="pedagogy-item">Scenario Visualization</span>
-        </div>
+        <p id="sp-desc"></p>
+        <div class="pedagogy" id="sp-pedagogy"></div>
       </div>
       <!-- Virtual Flight -->
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='30' fill='gray'/%3E%3Ccircle cx='25' cy='25' r='10' fill='black'/%3E%3Ccircle cx='75' cy='25' r='10' fill='black'/%3E%3Ccircle cx='25' cy='75' r='10' fill='black'/%3E%3Ccircle cx='75' cy='75' r='10' fill='black'/%3E%3C/svg%3E" alt="Quadcopter Icon">
         <h3 id="vf-title">Virtual Flight</h3>
-        <p id="vf-desc">
-          Practice piloting in a virtual space, mastering control dimensions and skills.
-        </p>
-        <div class="pedagogy" id="vf-pedagogy">
-          <span class="pedagogy-title">Pedagogical Approaches</span>
-          <span class="pedagogy-item">Immersive Learning</span>
-          <span class="pedagogy-item">Competency-based Learning</span>
-        </div>
+        <p id="vf-desc"></p>
+        <div class="pedagogy" id="vf-pedagogy"></div>
       </div>
       <!-- QuadPhysics -->
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='brown'/%3E%3Ccircle cx='50' cy='50' r='25' fill='white'/%3E%3Ccircle cx='65' cy='50' r='5' fill='brown'/%3E%3C/svg%3E" alt="Planet Icon">
         <h3 id="qp-title">QuadPhysics</h3>
-        <p id="qp-desc">
-          Explore weight, gravity, and propeller speed to simulate planetary conditions.
-        </p>
-        <div class="pedagogy" id="qp-pedagogy">
-          <span class="pedagogy-title">Pedagogical Approaches</span>
-          <span class="pedagogy-item">Discovery Learning</span>
-          <span class="pedagogy-item">Reflective Visualization</span>
-        </div>
+        <p id="qp-desc"></p>
+        <div class="pedagogy" id="qp-pedagogy"></div>
       </div>
       <!-- Dronography AOV -->
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='slateblue'/%3E%3Crect x='35' y='35' width='30' height='30' fill='white'/%3E%3C/svg%3E" alt="Drone Camera Icon">
         <h3 id="da-title">Dronography AOV</h3>
-        <p id="da-desc">
-          Explore AOV, FOV, and altitude to virtually measure area captured and building dimensions.
-        </p>
-        <div class="pedagogy" id="da-pedagogy">
-          <span class="pedagogy-title">Pedagogical Approaches</span>
-          <span class="pedagogy-item">Computational Thinking</span>
-          <span class="pedagogy-item">Scenario-based Learning</span>
-        </div>
+        <p id="da-desc"></p>
+        <div class="pedagogy" id="da-pedagogy"></div>
       </div>
       <!-- Code Simulation -->
       <div class="simulation">
         <img class="icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='tomato'/%3E%3Ctext x='50%25' y='55%25' fill='white' font-size='40' text-anchor='middle' font-family='Arial'%3E{+}%3C/text%3E%3C/svg%3E" alt="Code Icon">
         <h3 id="cs-title">Code Simulation</h3>
-        <p id="cs-desc">
-          Use path preview function to create and refine drone navigation programme.
-        </p>
-        <div class="pedagogy" id="cs-pedagogy">
-          <span class="pedagogy-title">Pedagogical Approaches</span>
-          <span class="pedagogy-item">Problem-based Learning</span>
-          <span class="pedagogy-item">Algorithm Design</span>
-        </div>
+        <p id="cs-desc"></p>
+        <div class="pedagogy" id="cs-pedagogy"></div>
       </div>
     </div>
   </div>
@@ -494,14 +482,12 @@
     </div>
   </footer>
   <script>
-    // Translation Data - with separated intro and introNote
     const translations = {
       en: {
         button: "繁體中文",
         introTitle: "Introduction",
         intro: "This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education.",
-        introNote:
-          "<b><u>(Recommended using a computer browser or iPad.)</u></b>",
+        introNote: "<b><u>(Recommended using a computer browser or iPad.)</u></b>",
         challengesTitle: "This simulation supports drone education strategies, including:",
         challenges: [
           { strong: "1. Hands-on Practice:", text: "Use virtual flights to develop piloting skills." },
@@ -512,19 +498,19 @@
         ],
         spTitle: "Satellite Positioning",
         spDesc: "Explore GNSS concepts with satellite movements and drone positioning.",
-        spPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Inquiry-based Learning</span><span class="pedagogy-item">Scenario Visualization</span>',
+        spPedagogy: "Inquiry-based Learning|Scenario Visualization",
         vfTitle: "Virtual Flight",
         vfDesc: "Practice piloting in a virtual space, mastering control dimensions and skills.",
-        vfPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Immersive Learning</span><span class="pedagogy-item">Competency-based Learning</span>',
+        vfPedagogy: "Immersive Learning|Competency-based Learning",
         qpTitle: "QuadPhysics",
         qpDesc: "Explore weight, gravity, and propeller speed to simulate planetary conditions.",
-        qpPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Discovery Learning</span><span class="pedagogy-item">Reflective Visualization</span>',
+        qpPedagogy: "Discovery Learning|Reflective Visualization",
         daTitle: "Dronography AOV",
-        daDesc: "Explore AOV, FOV, and altitude to virtually measure area captured and building dimensions.",
-        daPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Computational Thinking</span><span class="pedagogy-item">Scenario-based Learning</span>',
+        daDesc: "Explore AOV, FOV, and altitude to measure area captured and building dimensions.",
+        daPedagogy: "Computational Thinking|Scenario-based Learning",
         csTitle: "Code Simulation",
-        csDesc: "Use path preview function to create and refine drone navigation programme.",
-        csPedagogy: '<span class="pedagogy-title">Pedagogical Approaches</span><span class="pedagogy-item">Problem-based Learning</span><span class="pedagogy-item">Algorithm Design</span>',
+        csDesc: "Use path preview function to create and refine drone navigation programmes.",
+        csPedagogy: "Problem-based Learning|Algorithm Design",
         footer: "© 2025 AI-Facilitated Dronagogy. All rights reserved.",
         acknowledgement: "(Simulations generated with the assistance of GenAI chatbot o1-mini of the POE platform.)"
       },
@@ -532,8 +518,7 @@
         button: "English",
         introTitle: "介紹",
         intro: "本項目基於混合智能與 AI-TPACK 理論框架，將體驗式學習循環的教學策略轉化為互動模擬，促進探究式學習，實現具有成本效益的跨學科無人機 STEM 教育。",
-        introNote:
-          "<b><u>（建議使用電腦瀏覽器或 iPad 進行體驗）</u></b>",
+        introNote: "<b><u>（建議使用電腦瀏覽器或 iPad 進行體驗）</u></b>",
         challengesTitle: "本模擬支援無人機教育的策略包括：",
         challenges: [
           { strong: "1. 實務操作：", text: "透過虛擬飛行，掌握操控技巧。" },
@@ -544,25 +529,26 @@
         ],
         spTitle: "衛星定位",
         spDesc: "探索 GNSS 概念，觀察衛星運動和無人機定位。",
-        spPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">探究式學習</span><span class="pedagogy-item">場景可視化</span>',
+        spPedagogy: "探究式學習|場景可視化",
         vfTitle: "虛擬飛行",
         vfDesc: "在虛擬空間中練習無人機駕駛，掌握控制維度和技巧。",
-        vfPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">沉浸式學習</span><span class="pedagogy-item">能力為本學習</span>',
+        vfPedagogy: "沉浸式學習|能力為本學習",
         qpTitle: "四旋翼物理",
         qpDesc: "模擬不同星體條件，實驗重量、重力和旋翼速度等物理概念。",
-        qpPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">發現式學習</span><span class="pedagogy-item">反思性可視化</span>',
+        qpPedagogy: "發現式學習|反思性可視化",
         daTitle: "無人機攝影視角",
-        daDesc: "探索視角、視野和高度之間的關係，虛擬測量可攝面積和建築物大小。",
-        daPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">計算思維</span><span class="pedagogy-item">情境模擬學習</span>',
+        daDesc: "探索視角、視野和高度的關係，測量可攝面積和建築物大小。",
+        daPedagogy: "計算思維|情境模擬學習",
         csTitle: "代碼模擬",
         csDesc: "使用路徑預覽功能，設計、測試和修訂無人機巡航編程。",
-        csPedagogy: '<span class="pedagogy-title">教學法</span><span class="pedagogy-item">問題導向學習</span><span class="pedagogy-item">算法設計</span>',
+        csPedagogy: "問題導向學習|算法設計",
         footer: "© 2025 AI-支援無人機教學。版權所有。",
         acknowledgement: "(模擬由 POE 平台的 GenAI 聊天機器人 o1-mini 協助生成。)"
       }
     };
 
     let currentLang = 'en';
+
     function renderChallengesList() {
       const translation = translations[currentLang];
       const challengesList = document.getElementById('challenges-list');
@@ -578,40 +564,62 @@
         challengesList.appendChild(li);
       });
     }
+
     function renderIntro() {
       const translation = translations[currentLang];
       document.getElementById('intro-text').innerText = translation.intro;
       document.getElementById('intro-note').innerHTML = translation.introNote;
     }
+
+    function renderPedagogy(id, approachesString) {
+      const pedagogyDiv = document.getElementById(id);
+      pedagogyDiv.innerHTML = '';
+      if (!approachesString) return;
+      const approaches = approachesString.split('|');
+      approaches.forEach(approach => {
+        const span = document.createElement('span');
+        span.className = 'pedagogy-item';
+        span.textContent = approach;
+        pedagogyDiv.appendChild(span);
+      });
+    }
+
+    function renderSimCards() {
+      const t = translations[currentLang];
+      document.getElementById('sp-title').innerText = t.spTitle;
+      document.getElementById('vf-title').innerText = t.vfTitle;
+      document.getElementById('qp-title').innerText = t.qpTitle;
+      document.getElementById('da-title').innerText = t.daTitle;
+      document.getElementById('cs-title').innerText = t.csTitle;
+      document.getElementById('sp-desc').innerText = t.spDesc;
+      document.getElementById('vf-desc').innerText = t.vfDesc;
+      document.getElementById('qp-desc').innerText = t.qpDesc;
+      document.getElementById('da-desc').innerText = t.daDesc;
+      document.getElementById('cs-desc').innerText = t.csDesc;
+      renderPedagogy('sp-pedagogy', t.spPedagogy);
+      renderPedagogy('vf-pedagogy', t.vfPedagogy);
+      renderPedagogy('qp-pedagogy', t.qpPedagogy);
+      renderPedagogy('da-pedagogy', t.daPedagogy);
+      renderPedagogy('cs-pedagogy', t.csPedagogy);
+    }
+
     function toggleLanguage() {
       currentLang = currentLang === 'en' ? 'zh' : 'en';
-      const translation = translations[currentLang];
-      document.getElementById('language-toggle').innerText = translation.button;
-      document.getElementById('intro-title').innerText = translation.introTitle;
+      const t = translations[currentLang];
+      document.getElementById('language-toggle').innerText = t.button;
+      document.getElementById('intro-title').innerText = t.introTitle;
       renderIntro();
-      document.getElementById('challenges-title').innerText = translation.challengesTitle;
+      document.getElementById('challenges-title').innerText = t.challengesTitle;
       renderChallengesList();
-      document.getElementById('sp-title').innerText = translation.spTitle;
-      document.getElementById('sp-desc').innerText = translation.spDesc;
-      document.getElementById('sp-pedagogy').innerHTML = translation.spPedagogy;
-      document.getElementById('vf-title').innerText = translation.vfTitle;
-      document.getElementById('vf-desc').innerText = translation.vfDesc;
-      document.getElementById('vf-pedagogy').innerHTML = translation.vfPedagogy;
-      document.getElementById('qp-title').innerText = translation.qpTitle;
-      document.getElementById('qp-desc').innerText = translation.qpDesc;
-      document.getElementById('qp-pedagogy').innerHTML = translation.qpPedagogy;
-      document.getElementById('da-title').innerText = translation.daTitle;
-      document.getElementById('da-desc').innerText = translation.daDesc;
-      document.getElementById('da-pedagogy').innerHTML = translation.daPedagogy;
-      document.getElementById('cs-title').innerText = translation.csTitle;
-      document.getElementById('cs-desc').innerText = translation.csDesc;
-      document.getElementById('cs-pedagogy').innerHTML = translation.csPedagogy;
-      document.getElementById('footer-text').innerText = translation.footer;
-      document.getElementById('acknowledgement-text').innerText = translation.acknowledgement;
+      renderSimCards();
+      document.getElementById('footer-text').innerText = t.footer;
+      document.getElementById('acknowledgement-text').innerText = t.acknowledgement;
     }
+
     window.addEventListener('DOMContentLoaded', function() {
       renderIntro();
       renderChallengesList();
+      renderSimCards();
     });
   </script>
 </body>
