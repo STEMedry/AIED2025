@@ -69,6 +69,15 @@
       font-size: 1.3rem;
       line-height: 1.2;
     }
+    .intro .intro-note {
+      margin-top: 0.35rem;
+      font-size: 1.01rem;
+      font-weight: bold;
+      text-decoration: underline;
+      color: #d2691e;
+      letter-spacing: 0.01em;
+      display: block;
+    }
     .intro .language-switch {
       position: absolute;
       top: 0.1rem;
@@ -100,12 +109,10 @@
       min-height: unset;
       margin-bottom: 1rem;
     }
-    /* Strategies Box */
     .strategies-box {
       background: #e8f5e9;
       border: 2px solid #b2dfdb;
       border-radius: 12px;
-      /* Reduce only top and bottom padding! */
       padding: 0.2rem 1rem 0.2rem 1rem;
       box-shadow: 0 3px 12px rgba(44, 108, 79, 0.09);
       min-width: 200px;
@@ -189,7 +196,7 @@
       gap: 0.8rem;
       justify-content: center;
       flex-wrap: nowrap;
-      margin-bottom: 0.2rem; /* Reduced from 0rem for less gap */
+      margin-bottom: 0.05rem; /* Tighter gap to footer */
     }
     .simulation {
       background: white;
@@ -200,7 +207,8 @@
       padding: 0.2rem;
       flex: 1 1 0;
       min-width: 220px;
-      height: auto;
+      min-height: 264px; /* Increased height */
+      height: 264px;     /* Fixed height for uniformity */
       transition: transform 0.3s, box-shadow 0.3s;
       display: flex;
       flex-direction: column;
@@ -213,9 +221,9 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
     .simulation .icon {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 0rem;
+      width: 72px;
+      height: 72px;
+      margin: 0.5rem auto 0rem auto;
       transition: transform 0.5s;
     }
     @keyframes rotate-icon {
@@ -233,7 +241,7 @@
     .simulation p {
       font-size: 0.89rem;
       line-height: 1.17;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.1rem;
     }
     .pedagogy {
       margin-top: 0.1rem;
@@ -264,10 +272,11 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 0.5rem;
+      padding: 0.5rem 0.2rem 0.2rem 0.2rem; /* Tighter top and bottom padding */
       background: #003366;
       color: white;
       width: 100%;
+      margin-top: 0; /* Remove any default margin */
     }
     .footer-content {
       width: 100%;
@@ -292,6 +301,8 @@
       .simulation {
         min-width: 140px;
         max-width: 160px;
+        min-height: 240px;
+        height: 240px;
       }
       .simulation .icon {
         width: 82px;
@@ -308,6 +319,8 @@
         max-width: 95%;
         min-width: 180px;
         margin-bottom: 0.7rem;
+        min-height: 220px;
+        height: 220px;
       }
       .challenges-container {
         flex-direction: column;
@@ -349,6 +362,8 @@
       .simulation {
         max-width: 100%;
         min-width: 140px;
+        min-height: 200px;
+        height: 200px;
       }
     }
     @media (max-width: 520px) {
@@ -358,6 +373,10 @@
       }
       .video-box {
         height: 140px;
+      }
+      .simulation {
+        min-height: 160px;
+        height: 160px;
       }
     }
   </style>
@@ -375,8 +394,11 @@
         </div>
         <h2 id="intro-title">Introduction</h2>
         <p id="intro-text">
-          This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education. (Recommended using a computer browser or iPad.)
+          <!-- Filled by JS -->
         </p>
+        <span class="intro-note" id="intro-note">
+          <!-- Filled by JS -->
+        </span>
       </div>
     </div>
     <!-- Strategies Section (in a colored box) and Video Box Side by Side -->
@@ -472,12 +494,14 @@
     </div>
   </footer>
   <script>
-    // Translation Data - UPDATED bullets per user request
+    // Translation Data - with separated intro and introNote
     const translations = {
       en: {
         button: "繁體中文",
         introTitle: "Introduction",
-        intro: "This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education. (Recommended using a computer browser or iPad.)",
+        intro: "This project, grounded in the Hybrid Intelligence and AI-TPACK frameworks, transforms experiential learning cycle teaching strategies into interactive simulations to promote inquiry-based learning and cost-effective, interdisciplinary drone STEM education.",
+        introNote:
+          "<b><u>(Recommended using a computer browser or iPad.)</u></b>",
         challengesTitle: "This simulation supports drone education strategies, including:",
         challenges: [
           { strong: "1. Hands-on Practice:", text: "Use virtual flights to develop piloting skills." },
@@ -507,7 +531,9 @@
       zh: {
         button: "English",
         introTitle: "介紹",
-        intro: "本項目基於混合智能與 AI-TPACK 理論框架，將體驗式學習循環的教學策略轉化為互動模擬，促進探究式學習，實現具有成本效益的跨學科無人機 STEM 教育（建議使用電腦瀏覽器或 iPad 進行體驗）。",
+        intro: "本項目基於混合智能與 AI-TPACK 理論框架，將體驗式學習循環的教學策略轉化為互動模擬，促進探究式學習，實現具有成本效益的跨學科無人機 STEM 教育。",
+        introNote:
+          "<b><u>（建議使用電腦瀏覽器或 iPad 進行體驗）</u></b>",
         challengesTitle: "本模擬支援無人機教育的策略包括：",
         challenges: [
           { strong: "1. 實務操作：", text: "透過虛擬飛行，掌握操控技巧。" },
@@ -552,12 +578,17 @@
         challengesList.appendChild(li);
       });
     }
+    function renderIntro() {
+      const translation = translations[currentLang];
+      document.getElementById('intro-text').innerText = translation.intro;
+      document.getElementById('intro-note').innerHTML = translation.introNote;
+    }
     function toggleLanguage() {
       currentLang = currentLang === 'en' ? 'zh' : 'en';
       const translation = translations[currentLang];
       document.getElementById('language-toggle').innerText = translation.button;
       document.getElementById('intro-title').innerText = translation.introTitle;
-      document.getElementById('intro-text').innerText = translation.intro;
+      renderIntro();
       document.getElementById('challenges-title').innerText = translation.challengesTitle;
       renderChallengesList();
       document.getElementById('sp-title').innerText = translation.spTitle;
@@ -579,6 +610,7 @@
       document.getElementById('acknowledgement-text').innerText = translation.acknowledgement;
     }
     window.addEventListener('DOMContentLoaded', function() {
+      renderIntro();
       renderChallengesList();
     });
   </script>
