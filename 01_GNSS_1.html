@@ -574,6 +574,17 @@ drawSatellites();
 drawSignalCounter(cnt);
 updateTriangleButtonStates();
 attachTriangleButtonHandlers();
+
+    // --- Add the label here ---
+    ctx.save();
+    ctx.font = '14px Arial';
+    ctx.fillStyle = 'black';
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'left';
+    const padding = 12;
+    ctx.fillText('C Y YEUNG, EDUHK', padding, canvas.height - padding);
+    ctx.restore();
+
 }
 
 function getEventPosition(e){
