@@ -181,10 +181,10 @@ let prevRotorSpeed = 0;
 const HOVER_EPS = 0.01; // Use for all "hover" comparisons
 
 const guiControls = {
-mass: 10,
+mass: 8,
 rotorSpeed: 0, gravity: 9.8, pressure: 10,
 reset: function(){
-this.mass=10; this.rotorSpeed=0; this.gravity=9.8; this.pressure=10;
+this.mass=8; this.rotorSpeed=0; this.gravity=9.8; this.pressure=10;
 quadcopter.position.set(0,0,0);
 quadcopter.scale.set(1,1,1);
 velocity.y=0; scene.rotation.y=0;
@@ -1026,3 +1026,4 @@ statusBox.style.display = "none";
 </script>
 </body>
 </html>
+
